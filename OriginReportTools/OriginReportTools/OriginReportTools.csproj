@@ -67,6 +67,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ChEnData.cs" />
+    <Compile Include="EAHttp.cs" />
     <Compile Include="LoginWindows.xaml.cs">
       <DependentUpon>LoginWindows.xaml</DependentUpon>
     </Compile>

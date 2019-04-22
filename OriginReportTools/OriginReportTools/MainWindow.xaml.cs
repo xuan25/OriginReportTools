@@ -1,19 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Xml;
 
 namespace OriginReportTools
 {
@@ -23,28 +13,58 @@ namespace OriginReportTools
     public partial class MainWindow : Window
     {
         LoginWindows loginWindows;
-        string Token;
-        string PlayerEAID;
+        EAHttp eahttp = new EAHttp();
+        ChEnData chendata = new ChEnData();
+        Game MainButton;
         public MainWindow()
         {
             InitializeComponent();
+            LoadStatus();
 
+
+
+            MainButton = chendata.BF1;
+            //chendata.SerializableSave(chendata);
+            LoadCheckBox(MainButton);
             loginWindows = new LoginWindows();
             loginWindows.LoggedIn += LoginWindow_LoggedIn;
             loginWindows.LoggedOut += LoginWindow_LoggedOut;
             loginWindows.LoginCanceled += LoginWindow_LoginCanceled;
+            loginWindows.Loggeding1 += LoginWindow_Loggeding1;
+            loginWindows.Loggeding2 += LoginWindow_Loggeding2;
+            
         }
 
 
         private void LoginWindow_LoggedIn(string token)
         {
+            
             Dispatcher.Invoke(new Action(() =>
             {
                 LoginText.Text = "登陆成功";
                 string[]A = token.Split('"');
-                Token = A[3];
+                eahttp.Token = A[3];
                 LoginText.Text = "注销";
-                GetMe();
+                eahttp.GetMe();
+                PlayerName.Text = eahttp.PlayerName;
+                Email.Text = eahttp.Email;
+                IMG.Source = eahttp.bitmapImage;
+
+            }));
+        }
+        private void LoginWindow_Loggeding1()
+        {
+            Dispatcher.Invoke(new Action(() =>
+            {
+                PlayerName.Text = "检测到已登陆过...正在跳转";
+
+            }));
+        }
+        private void LoginWindow_Loggeding2()
+        {
+            Dispatcher.Invoke(new Action(() =>
+            {
+                PlayerName.Text = "未检测到登陆用户...";
 
             }));
         }
@@ -54,6 +74,7 @@ namespace OriginReportTools
             Dispatcher.Invoke(new Action(() =>
             {
                 LoginText.Text = "Logged out";
+                PlayerName.Text = "登陆操操作已被取消";
             }));
         }
 
@@ -61,15 +82,16 @@ namespace OriginReportTools
         {
             Dispatcher.Invoke(new Action(() =>
             {
-                LoginText.Text = "Login canceled";
+                LoginText.Text = "重新登陆";
             }));
         }
 
         private void LoginBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (LoginText.Text == "登陆")
+            if (LoginText.Text == "登陆"| LoginText.Text == "重新登陆")
             {
                 LoginText.Text = "载入中";
+                PlayerName.Text = "请耐心等待";
                 loginWindows.Login();
             }
             else if (LoginText.Text == "注销")
@@ -82,94 +104,7 @@ namespace OriginReportTools
 
             }
         }
-        public void GetMe()
-        {
-            String url = "https://gateway.ea.com/proxy/identity/pids/me";//url
-            var handler = new HttpClientHandler() { UseCookies = false };
-            var client = new HttpClient(handler);
 
-            var message = new HttpRequestMessage(HttpMethod.Get, url);
-            message.Headers.Add("Authorization", "Bearer " + Token);
-            var result = client.SendAsync(message);
-            // result.EnsureSuccessStatusCode();
-            //string a = result.Content.ReadAsStringAsync();
-            var rep = result.Result.Content.ReadAsStringAsync();
-            string a = rep.Result;
-            //var lient = new RestClient("https://gateway.ea.com/proxy/identity/pids/me");
-            //var equest = new RestRequest(Method.GET);
-            //equest.AddHeader("Postman-Token", "230b06ce-6b85-4d86-a77e-727560d6910e");
-            //equest.AddHeader("cache-control", "no-cache");
-            //equest.AddHeader("Authorization", "Bearer "+token);
-            //IRestResponse esponse = lient.Execute(equest);
-            //Console.WriteLine(esponse.Content);
-
-            //string a = esponse.Content;
-            a = a.Replace("\"", "");
-            a = a.Replace(" ", "");
-            a = a.Replace("\n", "");
-
-            string[] b = a.Split(',');
-            string[] c = b[3].Split(':');
-            Email.Text = c[1];
-            string[] c1 = b[2].Split(':');
-            PlayerEAID = c1[1];
-            //CreatTime_L.Text = "创建时间:" + b[16].Replace("dateCreated:", "");
-            PlayerName.Text = IDGetName(PlayerEAID);
-
-
-            // string externalRefValue = studentsJson["pid"][0]["externalRefValue"].ToString();
-
-            string A = ImgGet(PlayerEAID);
-            BitmapImage bitmapImage = new BitmapImage();
-            bitmapImage.BeginInit();  //给BitmapImage对象赋予数据的时候，需要用BeginInit()开始，用EndInit()结束
-            bitmapImage.UriSource = new Uri(A);
-            bitmapImage.DecodePixelWidth = 320;   //对大图片，可以节省内存。尽可能不要同时设置DecodePixelWidth和DecodePixelHeight，否则宽高比可能改变
-            bitmapImage.EndInit();
-            IMG.Source = bitmapImage;
-
-
-        }
-
-        private string ImgGet(string ID)
-        {
-
-            //return Imglink;//
-
-            String url = "https://api1.origin.com/avatar/user/" + ID + "/avatars?size=1";//url
-            var handler = new HttpClientHandler() { UseCookies = false };
-            var client = new HttpClient(handler);
-
-            var message = new HttpRequestMessage(HttpMethod.Get, url);
-            message.Headers.Add("authtoken", Token);
-            var result = client.SendAsync(message);
-            var rep = result.Result.Content.ReadAsStringAsync();
-            string idGetNameXml = rep.Result;
-            var doc = new XmlDocument();
-            doc.LoadXml(idGetNameXml);
-            XmlNode nobes = doc.SelectSingleNode("/users/user/avatar/link");
-            string Imglink = nobes.InnerText;
-            return Imglink;
-        }
-        public string IDGetName(string ID)
-        {
-            String url = "https://api1.origin.com/atom/users?userIds=" + ID;//url
-            var handler = new HttpClientHandler() { UseCookies = false };
-            var client = new HttpClient(handler);
-
-            var message = new HttpRequestMessage(HttpMethod.Get, url);
-            message.Headers.Add("authtoken", Token);
-            var result = client.SendAsync(message);
-            // result.EnsureSuccessStatusCode();
-            //string a = result.Content.ReadAsStringAsync();
-            var rep = result.Result.Content.ReadAsStringAsync();
-            string idGetNameXml = rep.Result;
-
-            var doc = new XmlDocument();
-            doc.LoadXml(idGetNameXml);
-            XmlNode nobes = doc.SelectSingleNode("/users/user/EAID");
-            string GameName = nobes.InnerText;
-            return GameName;
-        }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             loginWindows.Close();
@@ -180,6 +115,9 @@ namespace OriginReportTools
             BF1_B.BorderThickness = new Thickness(4f, 0, 0, 0);
             BFV_B.BorderThickness = new Thickness(0, 0, 0, 0);
             APEX_B.BorderThickness = new Thickness(0, 0, 0, 0);
+            MainButton = chendata.BF1;
+            LoadCheckBox(MainButton);
+
         }
 
         private void BFV_B_Click(object sender, RoutedEventArgs e)
@@ -187,6 +125,8 @@ namespace OriginReportTools
             BF1_B.BorderThickness = new Thickness(0, 0, 0, 0);
             BFV_B.BorderThickness = new Thickness(4f, 0, 0, 0);
             APEX_B.BorderThickness = new Thickness(0, 0, 0, 0);
+            MainButton = chendata.BFV;
+            LoadCheckBox(MainButton);
         }
 
         private void APEX_B_Click(object sender, RoutedEventArgs e)
@@ -194,6 +134,64 @@ namespace OriginReportTools
             BF1_B.BorderThickness = new Thickness(0, 0, 0, 0);
             BFV_B.BorderThickness = new Thickness(0, 0, 0, 0);
             APEX_B.BorderThickness = new Thickness(4f, 0, 0, 0);
+            MainButton = chendata.APEX;
+            LoadCheckBox(MainButton);
         }
+
+
+        private void LoadCheckBox(Game Name)
+        {
+            CheckList.Children.Clear();
+            foreach (EnCh ench in Name.CheatCheckBox)
+            {
+                CheckBox cb = new CheckBox();
+                cb.Content = ench.Ch;
+                cb.Tag = ench.En;
+                cb.AddHandler(CheckBox.CheckedEvent, new RoutedEventHandler(Checked));
+                cb.AddHandler(CheckBox.UncheckedEvent, new RoutedEventHandler(Unchecked));
+                CheckList.Children.Add(cb);
+
+            }
+        }
+
+        private void Checked(object sender, RoutedEventArgs e)
+        {
+            A.Text = A.Text + ((CheckBox)sender).Tag.ToString();
+
+        }
+
+        private void Unchecked(object sender, RoutedEventArgs e)
+        {
+            A.Text = A.Text.Replace(((CheckBox)sender).Tag.ToString(), "");
+           
+        }
+
+
+        public bool LoadStatus()
+        {
+            string path = Environment.CurrentDirectory + "\\ChEnData.dat";
+            if (!File.Exists(path))
+            {
+                return false;
+            }
+            try
+            {
+                Stream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+                BinaryFormatter binaryFormatter = new BinaryFormatter();
+                ChEnData chendataa = (ChEnData)binaryFormatter.Deserialize(stream);
+                stream.Close();
+                chendata = chendataa;
+
+                //if (ChEnData.IsLoggedIn)
+                //    LoginBtn_Click(null, null);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
     }
 }

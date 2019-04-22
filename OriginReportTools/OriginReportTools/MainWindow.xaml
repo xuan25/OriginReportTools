@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OriginReportTools"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="854" Closing="Window_Closing">
+        Title="MainWindow" Height="481.707" Width="952.781" Closing="Window_Closing">
     <Window.Resources>
         <ControlTemplate x:Key="TabItemControlTemplate1" TargetType="{x:Type TabItem}">
             <Grid x:Name="templateRoot" SnapsToDevicePixels="True">
@@ -206,7 +206,7 @@
             </ControlTemplate.Triggers>
         </ControlTemplate>
     </Window.Resources>
-    <Grid ShowGridLines="True">
+    <Grid ShowGridLines="False">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" ></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
@@ -234,14 +234,63 @@
             </StackPanel>
         </Grid>
         <Grid Grid.Column="1">
-            <TabControl Grid.Column="1" Height="Auto" Width="Auto" VerticalAlignment="Top" BorderBrush="#FF747474" >
+            <TabControl Grid.Column="1" Height="Auto" Width="Auto" BorderBrush="#FF747474" >
 
                 <TabItem Background="{x:Null}" BorderBrush="{x:Null}" Template="{DynamicResource TabItemControlTemplate1}">
                     <TabItem.Header>
                         <TextBlock Text="快速举报" Margin="10,20,8,5" FontWeight="Bold" FontSize="20">
                         </TextBlock>
                     </TabItem.Header>
-                    <Grid/>
+                    <Grid >
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="作弊者ID" FontSize="20" Margin="14,0,14,5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <WrapPanel Grid.Row="0" Grid.Column="1" Margin="10">
+                            <TextBox  FontSize="20" Width="300" ></TextBox>
+                            <TextBlock x:Name="A">选中内容：</TextBlock>
+                        </WrapPanel>
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="作弊内容" FontSize="20" Margin="14,0,14,5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                      
+                        <WrapPanel x:Name="CheckList" Grid.Row="1" Grid.Column="1" Margin="10" >
+                            
+                        </WrapPanel>
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="详细信息：" FontSize="15" Margin="14,14,14,5" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="兵种" FontSize="20" Margin="14,0,14,5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <WrapPanel Grid.Row="3" Grid.Column="1" Margin="10" >
+                            <ComboBox Width="100"></ComboBox>
+                        </WrapPanel>
+
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="武器" FontSize="20" Margin="14,0,14,5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <WrapPanel Grid.Row="4" Grid.Column="1" Margin="10" >
+                            <ComboBox Width="300"></ComboBox>
+                        </WrapPanel>
+
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="杀敌/死亡" FontSize="20" Margin="14,0,14,5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <WrapPanel Grid.Row="5" Grid.Column="1" Margin="10" >
+                            <TextBox  FontSize="20" Width="65" ></TextBox>
+                            <TextBox Margin="20,0,0,0"  FontSize="20" Width="65" ></TextBox>
+                        </WrapPanel>
+
+                        <TextBlock Grid.Row="6" Grid.Column="0" Text="地图" FontSize="20" Margin="14,0,14,5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <WrapPanel Grid.Row="6" Grid.Column="1" Margin="10" >
+                            <ComboBox Width="300"></ComboBox>
+                        </WrapPanel>
+
+                    </Grid>
 
                 </TabItem>
                 <TabItem Background="{x:Null}" BorderBrush="{x:Null}" Template="{DynamicResource TabItemControlTemplate1}">
@@ -274,7 +323,7 @@
                 </TabItem>
 
             </TabControl>
-            <Grid ShowGridLines="True">
+            <Grid ShowGridLines="False">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -283,6 +332,8 @@
                 </TextBlock>
                 <TextBlock  Grid.Column="1" x:Name="Email" Text="PlayerEmail" Margin="10,41,8,5" FontWeight="Bold" FontSize="10" HorizontalAlignment="Right">
                 </TextBlock>
+                
+                
                 <Grid  Grid.Column="0" Width="50" Height="50" Margin="5,5,5,5" HorizontalAlignment="Right" VerticalAlignment="Top">
                     <Image x:Name="IMG" Width="50" Height="50"></Image>
                 </Grid>
@@ -297,7 +348,6 @@
                     <TextBlock x:Name="LoginText" Text="登陆" Margin="14" FontWeight="Bold" FontSize="20"/>
                 </Button.Content>
             </Button>
-
         </StackPanel>
     </Grid>
 </Window>
