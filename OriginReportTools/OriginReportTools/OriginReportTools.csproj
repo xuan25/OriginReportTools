@@ -69,8 +69,8 @@
     </Compile>
     <Compile Include="ChEnData.cs" />
     <Compile Include="EAHttp.cs" />
-    <Compile Include="GamesData.cs" />
-    <Compile Include="GamesDataDemo.cs" />
+    <Compile Include="GamesDataSet.cs" />
+    <Compile Include="GamesDataSetDemo.cs" />
     <Compile Include="LoginWindows.xaml.cs">
       <DependentUpon>LoginWindows.xaml</DependentUpon>
     </Compile>

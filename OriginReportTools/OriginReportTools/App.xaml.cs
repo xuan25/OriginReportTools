@@ -15,7 +15,7 @@ namespace OriginReportTools
     {
         public App()
         {
-            new GamesDataDemo();
+            new GamesDataSetDemo();
         }
     }
 }
