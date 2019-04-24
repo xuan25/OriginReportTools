@@ -13,5 +13,9 @@ namespace OriginReportTools
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            new GamesDataDemo();
+        }
     }
 }

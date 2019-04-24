@@ -209,7 +209,7 @@ namespace OriginReportTools
 
         private void GameClass_DropDownClosed(object sender, EventArgs e)
         {
-            foreach(MainButton.Class.)
+            //foreach(MainButton.Class.)
         }
     }
 }
