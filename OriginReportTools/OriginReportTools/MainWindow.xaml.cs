@@ -19,12 +19,14 @@ namespace OriginReportTools
         public MainWindow()
         {
             InitializeComponent();
-            LoadStatus();
+
+
+            //LoadStatus();
 
 
 
             MainButton = chendata.BF1;
-            //chendata.SerializableSave(chendata);
+            chendata.SerializableSave(chendata);
             LoadCheckBox(MainButton);
             loginWindows = new LoginWindows();
             loginWindows.LoggedIn += LoginWindow_LoggedIn;
@@ -152,6 +154,18 @@ namespace OriginReportTools
                 CheckList.Children.Add(cb);
 
             }
+
+            GameClass.Items.Clear();
+            GameMap.Items.Clear();
+            foreach (GameClass gc in Name.Class)
+            {
+                GameClass.Items.Add (gc.Name.Ch);
+
+            }
+            foreach (EnCh gc in Name.Map)
+            {
+                GameMap.Items.Add(gc.Ch);
+            }
         }
 
         private void Checked(object sender, RoutedEventArgs e)
@@ -193,5 +207,9 @@ namespace OriginReportTools
             }
         }
 
+        private void GameClass_DropDownClosed(object sender, EventArgs e)
+        {
+            foreach(MainButton.Class.)
+        }
     }
 }

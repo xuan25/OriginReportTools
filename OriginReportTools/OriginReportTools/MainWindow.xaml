@@ -215,7 +215,7 @@
 
 
         <Grid Grid.Column="0" HorizontalAlignment="Left">
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" >
+            <StackPanel  HorizontalAlignment="Center" VerticalAlignment="Center" >
                 <Button x:Name="BF1_B" BorderThickness="4,0,0,0" Click="BF1_B_Click" Background="{x:Null}" BorderBrush="#FFFF9A45" >
                     <Button.Content>
                         <Image Width="50" Height="50" Margin="5,5,5,5" HorizontalAlignment="Left" VerticalAlignment="Center" Source="BF1.png"></Image>
@@ -234,7 +234,7 @@
             </StackPanel>
         </Grid>
         <Grid Grid.Column="1">
-            <TabControl Grid.Column="1" Height="Auto" Width="Auto" BorderBrush="#FF747474" >
+            <TabControl Grid.Column="1" Height="Auto" Width="Auto" BorderBrush="#FF747474" BorderThickness="1,1,0,0" >
 
                 <TabItem Background="{x:Null}" BorderBrush="{x:Null}" Template="{DynamicResource TabItemControlTemplate1}">
                     <TabItem.Header>
@@ -271,12 +271,13 @@
 
                         <TextBlock Grid.Row="3" Grid.Column="0" Text="兵种" FontSize="20" Margin="14,0,14,5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         <WrapPanel Grid.Row="3" Grid.Column="1" Margin="10" >
-                            <ComboBox Width="100"></ComboBox>
+                            <ComboBox x:Name="GameClass" Width="100" DropDownClosed="GameClass_DropDownClosed"></ComboBox>
                         </WrapPanel>
 
                         <TextBlock Grid.Row="4" Grid.Column="0" Text="武器" FontSize="20" Margin="14,0,14,5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         <WrapPanel Grid.Row="4" Grid.Column="1" Margin="10" >
-                            <ComboBox Width="300"></ComboBox>
+                            <ComboBox x:Name="WeaponClass" Width="116"></ComboBox>
+                            <ComboBox x:Name="WeaponList" Margin="20,0,0,0" Width="359"></ComboBox>
                         </WrapPanel>
 
                         <TextBlock Grid.Row="5" Grid.Column="0" Text="杀敌/死亡" FontSize="20" Margin="14,0,14,5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -287,7 +288,7 @@
 
                         <TextBlock Grid.Row="6" Grid.Column="0" Text="地图" FontSize="20" Margin="14,0,14,5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         <WrapPanel Grid.Row="6" Grid.Column="1" Margin="10" >
-                            <ComboBox Width="300"></ComboBox>
+                            <ComboBox x:Name="GameMap" Width="220"></ComboBox>
                         </WrapPanel>
 
                     </Grid>
@@ -343,9 +344,9 @@
         </Grid>
 
         <StackPanel Grid.Column="2">
-            <Button x:Name="LoginBtn" Click="LoginBtn_Click" >
+            <Button x:Name="LoginBtn" Click="LoginBtn_Click"  BorderThickness="1,0,0,1" >
                 <Button.Content>
-                    <TextBlock x:Name="LoginText" Text="登陆" Margin="14" FontWeight="Bold" FontSize="20"/>
+                    <TextBlock x:Name="LoginText" Text="登陆" Margin="10,20,8,9" FontWeight="Bold" FontSize="20" />
                 </Button.Content>
             </Button>
         </StackPanel>
