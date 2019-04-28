@@ -21,7 +21,8 @@ namespace OriginReportTools
                                 new object[] { "地图1", new GamesDataSet.Game.Map("Map1") },
                                 new object[] { "地图2", new GamesDataSet.Game.Map("Map2") }
                             },
-                            new object[][]{
+                            new object[][]
+                            {
                                 new object[]
                                 {
                                     "医疗兵",
@@ -140,7 +141,13 @@ namespace OriginReportTools
                                             }
                                         })
                                 }
-                            })
+                            },
+                            new object[][]
+                            {
+                                new object[]{"透视",new GamesDataSet.Game.CheckType("WallHack") }
+                            }
+                            
+                            )
                     },
                     new object[]
                     {
@@ -167,7 +174,7 @@ namespace OriginReportTools
                                                     new object[][]
                                                     {
                                                         new object[] { "医疗兵主武器A", new GamesDataSet.Game.Arm.EquipmentSet.Equipment("Medic Main Weapon A") },
-                                                        new object[] { "医疗兵主武器B", new GamesDataSet.Game.Arm.EquipmentSet.Equipment("Medic Main Weapon B") }
+                                                        new object[] { "医疗兵主武器B", new GamesDataSet.Game.Arm.EquipmentSet.Equipment("Medic Main Weapon B") },
                                                     })
                                             },
                                             new object[] {
@@ -271,7 +278,13 @@ namespace OriginReportTools
                                             }
                                         })
                                 }
-                            })
+                            },
+                            new object[][]
+                            {
+                                new object[]{"透视",new GamesDataSet.Game.CheckType("WallHack") }
+                            }
+
+                            )
                     }
                 });
 
@@ -287,6 +300,11 @@ namespace OriginReportTools
             foreach (KeyValuePair<string, GamesDataSet.Game.Arm> arm in gamesDataSet.Games["战地V"].Arms)
             {
                 Console.WriteLine(string.Format("{0} - {1}", arm.Key, arm.Value));
+            }
+            Console.WriteLine("战地1全部作弊列表:");
+            foreach (KeyValuePair<string, GamesDataSet.Game.CheckType> check in gamesDataSet.Games["战地1"].CheckTypes)
+            {
+                Console.WriteLine(string.Format("{0} - {1}", check.Key, check.Value));
             }
             Console.WriteLine("战地V医疗兵全部主武器:");
             foreach (KeyValuePair<string, GamesDataSet.Game.Arm.EquipmentSet.Equipment> equipment in gamesDataSet.Games["战地V"].Arms["医疗兵"].EquipmentSets["医疗兵主武器"].Equipments)

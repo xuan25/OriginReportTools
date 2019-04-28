@@ -61,7 +61,9 @@ namespace OriginReportTools
             /// <summary>
             /// Dictionary of Arms
             /// </summary>
-            public Dictionary<string, Arm> Arms;
+            public Dictionary<string, Arm> Arms; 
+
+            public Dictionary<string, CheckType> CheckTypes;
 
             /// <summary>
             /// Constructor of Class <c>Game</c>.
@@ -69,7 +71,7 @@ namespace OriginReportTools
             /// <param name="name">The name of the Game</param>
             /// <param name="maps">An array of Maps, each Map is an array with its key and <c>Map</c> instance</param>
             /// <param name="arms">An array of Arms, each Arm is an array with its key and <c>Arm</c> instance</param>
-            public Game(string name, object[][] maps, object[][] arms)
+            public Game(string name, object[][] maps, object[][] arms, object [][] checktypes)
             {
                 Name = name;
 
@@ -83,6 +85,12 @@ namespace OriginReportTools
                 foreach (object[] arm in arms)
                 {
                     Arms.Add((string)arm[0], (Arm)arm[1]);
+                }
+
+                CheckTypes = new Dictionary<string, CheckType>();
+                foreach (object[] check in checktypes)
+                {
+                    CheckTypes.Add((string)check[0], (CheckType)check[1]);
                 }
             }
 
@@ -126,6 +134,23 @@ namespace OriginReportTools
                 }
             }
 
+            public class CheckType
+            {
+
+                public string Name;
+                public CheckType(string name)
+                {
+                    Name = name;
+                }
+
+                public override string ToString()
+                {
+                    return Name;
+                }
+            }
+
+
+
             /// <summary>
             /// Class <c>Arm</c> models an Arm in a Game.
             /// Author: Xuan525
@@ -157,6 +182,9 @@ namespace OriginReportTools
                         EquipmentSets.Add((string)equipmentSet[0], (EquipmentSet)equipmentSet[1]);
                     }
                 }
+
+
+
 
                 /// <summary>
                 /// Returns the Name of the Arm

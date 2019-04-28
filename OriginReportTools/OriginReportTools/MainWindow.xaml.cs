@@ -181,7 +181,7 @@ namespace OriginReportTools
         }
 
 
-        public bool LoadStatus()
+        public bool SerializableLoad()
         {
             string path = Environment.CurrentDirectory + "\\ChEnData.dat";
             if (!File.Exists(path))

@@ -305,10 +305,6 @@ namespace OriginReportTools
             binaryFormatter.Serialize(stream, chEnData);
             stream.Close();
         }
-
-
-
-
     }
 
     }
@@ -333,9 +329,11 @@ namespace OriginReportTools
             }
     }
     [Serializable]
+
+
     public class WeaponClass
     {
-    public Boolean visi;
+        public Boolean visi;
         public string Name; //分类名字
         public List<EnCh> List= new List<EnCh>();//该名字下的武器列表
         public WeaponClass(string name)
