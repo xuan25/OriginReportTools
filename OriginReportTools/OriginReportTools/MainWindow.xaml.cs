@@ -14,8 +14,7 @@ namespace OriginReportTools
     {
         LoginWindows loginWindows;
         EAHttp eahttp = new EAHttp();
-        ChEnData chendata = new ChEnData();
-        Game MainButton;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -180,6 +179,17 @@ namespace OriginReportTools
            
         }
 
+        public void SerializableSave(ChEnData chEnData)
+        {
+            string fileDirectory = Environment.CurrentDirectory + "\\";
+            if (!Directory.Exists(fileDirectory))
+                Directory.CreateDirectory(fileDirectory);
+            string fileName = "ChEnData.dat";
+            Stream stream = new FileStream(fileDirectory + fileName, FileMode.Create, FileAccess.ReadWrite);
+            BinaryFormatter binaryFormatter = new BinaryFormatter();
+            binaryFormatter.Serialize(stream, chEnData);
+            stream.Close();
+        }
 
         public bool SerializableLoad()
         {

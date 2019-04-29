@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace OriginReportTools
 {
@@ -7,6 +8,7 @@ namespace OriginReportTools
     /// Author: Xuan525
     /// Date: 24/04/2019
     /// </summary>
+    [Serializable]
     class GamesDataSet
     {
         /// <summary>
@@ -42,7 +44,6 @@ namespace OriginReportTools
         {
             return Name;
         }
-
         /// <summary>
         /// Class <c>Game</c> models the the content of a game.
         /// Author: Xuan525
