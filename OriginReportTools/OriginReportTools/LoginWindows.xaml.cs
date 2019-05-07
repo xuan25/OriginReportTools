@@ -41,6 +41,10 @@ namespace OriginReportTools
             this.Show();
         }
 
+        public void OpenEAIDLink(string EALink)
+        {
+            LoginBroswer.Navigate("https://www.origin.com/irl/zh-tw/profile/user/" + EALink + "/achievements");
+        }
         public void Login()
         { 
             LoginBroswer.Navigate("https://signin.ea.com/p/web2/login?execution=e526258876s1&initref=https%3A%2F%2Faccounts.ea.com%3A443%2Fconnect%2Fauth%3Fredirect_uri%3Dhttps%253A%252F%252Fwww.origin.com%252Foauth%252Flogin%253Flpu%253Dtrue%2526ru%253D%252Fzh-hk%252Fstore%252F%253Flogin%253DWyJsb2dpbj1XeUlpWFElM0QlM0QiXQ%253D%253D%26locale%3Dzh_HK%26display%3Dweb2%252Flogin%26response_type%3Dcode%26client_id%3Dlive.origin.com");

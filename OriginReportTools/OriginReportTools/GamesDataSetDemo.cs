@@ -5,9 +5,10 @@ namespace OriginReportTools
 {
     class GamesDataSetDemo
     {
+        public GamesDataSet Data;
         public GamesDataSetDemo()
         {
-            GamesDataSet gamesDataSet = new GamesDataSet(
+          GamesDataSet gamesDataSet = new GamesDataSet(
                 "游戏数据集",
                 new object[][]
                 {
@@ -55,7 +56,7 @@ namespace OriginReportTools
                                 new object[]
                                 {
                                     "医疗兵",
-                                    new GamesDataSet.Game.Arm(
+                                       new GamesDataSet.Game.Arm(
                                         "Medic",
                                         new object[][]
                                         {
@@ -132,7 +133,7 @@ namespace OriginReportTools
                                                     })
                                             },
                                             new object[] {
-                                                "突击兵特殊武器",
+                                                "特殊武器",
                                                 new GamesDataSet.Game.Arm.EquipmentSet(
                                                     "Assault Special Weapon",
                                                     new object[][]
@@ -665,7 +666,6 @@ namespace OriginReportTools
                                                          new object[] { "哨兵机枪", new GamesDataSet.Game.Arm.EquipmentSet.Equipment("Mg 08/15") },
                                                          new object[] { "维拉·佩罗隆冲锋枪", new GamesDataSet.Game.Arm.EquipmentSet.Equipment("Villar Perosa") },
                                                          new object[] { "奇兵棒", new GamesDataSet.Game.Arm.EquipmentSet.Equipment("Raider Club") },
-                                                         new object[] { "奇兵棒", new GamesDataSet.Game.Arm.EquipmentSet.Equipment("Raider Club") },
                                                          new object[] { "3号左轮手枪", new GamesDataSet.Game.Arm.EquipmentSet.Equipment("No.3 Revolver") },
                                                          new object[] { "短管散弹枪", new GamesDataSet.Game.Arm.EquipmentSet.Equipment("Sawed Off Shotgun") }
                                                     })
@@ -706,9 +706,9 @@ namespace OriginReportTools
                             },//兵种列表
                             new object[][]
                             {
-                                new object[]{"透视",new GamesDataSet.Game.CheckType("WallHack") },
+                                new object[]{"透视",new GamesDataSet.Game.CheckType("Wall Hack") },
                                 new object[]{"自瞄",new GamesDataSet.Game.CheckType("Aimbot") },
-                                new object[]{"改伤",new GamesDataSet.Game.CheckType("Change weapon's damage") },
+                                new object[]{"改伤",new GamesDataSet.Game.CheckType("Damage hacked") },
                                 new object[]{"隐身",new GamesDataSet.Game.CheckType("Invisible") },
                                 new object[]{"子弹穿墙",new GamesDataSet.Game.CheckType("Bullet penetration hack") },
                                 new object[]{ "一枪秒杀", new GamesDataSet.Game.CheckType("One shot kill in every range without a headshot") },
@@ -1049,21 +1049,22 @@ namespace OriginReportTools
                                  new object[]{"透视",new GamesDataSet.Game.CheckType("WallHack") },
                                 new object[]{"自瞄",new GamesDataSet.Game.CheckType("Aimbot") },
                                 new object[]{"改伤",new GamesDataSet.Game.CheckType("Change weapon's damage") },
-                                new object[]{"隐身",new GamesDataSet.Game.CheckType("Invisible") },
-                                new object[]{"子弹穿墙",new GamesDataSet.Game.CheckType("Bullet penetration hack") },
-                                new object[]{ "一枪秒杀", new GamesDataSet.Game.CheckType("One shot kill in every range without a headshot") },
-                                new object[]{"全图索敌",new GamesDataSet.Game.CheckType("WallHack") }
+                                //new object[]{"隐身",new GamesDataSet.Game.CheckType("Invisible") },
+                               // new object[]{"子弹穿墙",new GamesDataSet.Game.CheckType("Bullet penetration hack") },
+                              //  new object[]{ "一枪秒杀", new GamesDataSet.Game.CheckType("One shot kill in every range without a headshot") },
+                               // new object[]{"全图索敌",new GamesDataSet.Game.CheckType("WallHack") }
                             }
 
                             )
                     }
                 });
+            Data = gamesDataSet;
 
             Console.WriteLine("名称访问测试:");
             Console.WriteLine(string.Format("战地1 - {0}", gamesDataSet.Games["战地1"]));
             Console.WriteLine(string.Format("战地1医疗兵 - {0}", gamesDataSet.Games["战地1"].Arms["医疗兵"]));
-            Console.WriteLine(string.Format("战地1医疗兵主武器 - {0}", gamesDataSet.Games["战地1"].Arms["医疗兵"].EquipmentSets["医疗兵主武器"]));
-            Console.WriteLine(string.Format("战地1医疗兵主武器A - {0}", gamesDataSet.Games["战地1"].Arms["医疗兵"].EquipmentSets["医疗兵主武器"].Equipments["蒙德拉贡"]));
+            Console.WriteLine(string.Format("战地1医疗兵主武器 - {0}", gamesDataSet.Games["战地1"].Arms["医疗兵"].EquipmentSets["主武器"]));
+            Console.WriteLine(string.Format("战地1医疗兵主武器A - {0}", gamesDataSet.Games["战地1"].Arms["医疗兵"].EquipmentSets["主武器"].Equipments["蒙德拉贡"]));
             Console.WriteLine();
 
             Console.WriteLine("遍历测试:");
@@ -1078,7 +1079,7 @@ namespace OriginReportTools
                 Console.WriteLine(string.Format("{0} - {1}", check.Key, check.Value));
             }
             Console.WriteLine("战地V医疗兵全部主武器:");
-            foreach (KeyValuePair<string, GamesDataSet.Game.Arm.EquipmentSet.Equipment> equipment in gamesDataSet.Games["战地V"].Arms["医疗兵"].EquipmentSets["医疗兵主武器"].Equipments)
+            foreach (KeyValuePair<string, GamesDataSet.Game.Arm.EquipmentSet.Equipment> equipment in gamesDataSet.Games["战地V"].Arms["医疗兵"].EquipmentSets["主武器"].Equipments)
             {
                 Console.WriteLine(string.Format("{0} - {1}", equipment.Key, equipment.Value));
             }

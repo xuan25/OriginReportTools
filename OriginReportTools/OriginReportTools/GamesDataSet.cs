@@ -9,7 +9,7 @@ namespace OriginReportTools
     /// Date: 24/04/2019
     /// </summary>
     [Serializable]
-    class GamesDataSet
+     public class GamesDataSet
     {
         /// <summary>
         /// Name of the Dataset
@@ -44,6 +44,7 @@ namespace OriginReportTools
         {
             return Name;
         }
+        [Serializable]
         /// <summary>
         /// Class <c>Game</c> models the the content of a game.
         /// Author: Xuan525
@@ -103,7 +104,7 @@ namespace OriginReportTools
             {
                 return Name;
             }
-
+            [Serializable]
             /// <summary>
             /// Class <c>Map</c> models a Map in a Game.
             /// Author: Xuan525
@@ -134,7 +135,7 @@ namespace OriginReportTools
                     return Name;
                 }
             }
-
+            [Serializable]
             public class CheckType
             {
 
@@ -151,7 +152,7 @@ namespace OriginReportTools
             }
 
 
-
+            [Serializable]
             /// <summary>
             /// Class <c>Arm</c> models an Arm in a Game.
             /// Author: Xuan525
@@ -183,10 +184,6 @@ namespace OriginReportTools
                         EquipmentSets.Add((string)equipmentSet[0], (EquipmentSet)equipmentSet[1]);
                     }
                 }
-
-
-
-
                 /// <summary>
                 /// Returns the Name of the Arm
                 /// </summary>
@@ -195,7 +192,7 @@ namespace OriginReportTools
                 {
                     return Name;
                 }
-
+                [Serializable]
                 /// <summary>
                 /// Class <c>EquipmentSet</c> models an EquipmentSet in a Game.
                 /// Author: Xuan525
@@ -236,7 +233,7 @@ namespace OriginReportTools
                     {
                         return Name;
                     }
-
+                    [Serializable]
                     public class Equipment
                     {
                         /// <summary>

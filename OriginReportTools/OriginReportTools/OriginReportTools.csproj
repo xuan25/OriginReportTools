@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="TextProcessing .cs" />
     <Page Include="LoginWindows.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -70,6 +71,7 @@
     <Compile Include="EAHttp.cs" />
     <Compile Include="GamesDataSet.cs" />
     <Compile Include="GamesDataSetDemo.cs" />
+    <Compile Include="HackDataSet.cs" />
     <Compile Include="LoginWindows.xaml.cs">
       <DependentUpon>LoginWindows.xaml</DependentUpon>
     </Compile>
