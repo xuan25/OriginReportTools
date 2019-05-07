@@ -328,7 +328,7 @@ namespace OriginReportTools
             //}
             HackData Hdata = new HackData();
             Hdata.Key = HackDataList.Count+1;
-            Hdata.HackName = HackName.Text;
+            Hdata.NameList.Add(HackName.Text);
             Hdata.HackEAID = eahttp.HackerEAID;
             Hdata.HackCheckType = CheckTypesList;
             Hdata.Game = GameName;
@@ -388,6 +388,14 @@ namespace OriginReportTools
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             dataBinding();
+        }
+
+        public void ReLoadName()
+        {
+            foreach (HackData a in HackDataList)
+            {
+               // a.HackName=a.NameList[]
+            }
         }
 
         public void dataBinding()

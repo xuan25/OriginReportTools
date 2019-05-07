@@ -9,6 +9,7 @@ namespace OriginReportTools
     [Serializable]
     public struct HackData
     {
+
         public int Key { get; set; }
         public string Game { get; set; }
         public string HackName { get; set; }
@@ -23,8 +24,10 @@ namespace OriginReportTools
         public string Weapon { get; set; }
         public string K { get; set; }
         public string D { get; set; }
-
-
+        public string IsBan { get; set; }
+        public string IsUpToServer { get; set; }
+        public List<string> NameList{get;set;}
+        public string HackFirstName { get; set; }
     }
 
 }
