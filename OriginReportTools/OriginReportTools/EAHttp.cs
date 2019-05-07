@@ -126,11 +126,11 @@ namespace OriginReportTools
         }
 
 
-        public string IDgetLink(string ID)
+        public string IDgetLink(string EAID)
         {
             try
             {
-                String url = "https://api1.origin.com/gifting/idobfuscate/users/" + ID + "/encodePair";//url
+                String url = "https://api1.origin.com/gifting/idobfuscate/users/" + EAID + "/encodePair";//url
                 var handler = new HttpClientHandler() { UseCookies = false };
                 var client = new HttpClient(handler);
                 var message = new HttpRequestMessage(HttpMethod.Get, url);
@@ -139,8 +139,7 @@ namespace OriginReportTools
                 var rep = result.Result.Content.ReadAsStringAsync();
                 string t = rep.Result;
                 string[] s1 = t.Split('"');
-                string Link = s1[3];
-
+                string Link = "https://www.origin.com/irl/zh-tw/profile/user/" + s1[3] + "/achievements";
                 return Link;
             }
             catch

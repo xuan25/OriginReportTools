@@ -392,22 +392,11 @@ namespace OriginReportTools
 
         public void dataBinding()
         {
-            List<object> aList = new List<object>();
-            HackData ps1 = new HackData();//单行数据
-            ps1.Key = 111;
-            ps1.Class = "20180907";
-            ps1.ReportTime = new DateTime(2019, 5, 5, 0, 4, 30);
-            aList.Add(ps1);
-
-            ps1.Key = 131;
-            ps1.Class = "20180906";
-            ps1.ReportTime = new DateTime(2019, 5, 6, 0, 4, 30);
-            aList.Add(ps1);
-            DataGrid.ItemsSource = aList;
+            DataGrid.ItemsSource = HackDataList;
             DataGrid.AutoGenerateColumns = false;//禁止自动添加列
-            DataGrid.CanUserAddRows = false;//禁止自动添加行
-            PlayerName.Text = ps1.ReportTime.ToLocalTime().ToString();
-            DateTime c =  DateTime.Parse(PlayerName.Text);
+            DataGrid.CanUserAddRows = true;//禁止自动添加行
+           // PlayerName.Text = ps1.ReportTime.ToLocalTime().ToString();时间转换
+           // DateTime c =  DateTime.Parse(PlayerName.Text);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -517,12 +506,18 @@ namespace OriginReportTools
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            
-            loginWindows.OpenEAIDLink(eahttp.IDgetLink("GenesisAN"));
-            loginWindows.Show();
+            eahttp.NameGetID(HackName.Text);
+            InfoWindows a= new InfoWindows(eahttp.IDgetLink(eahttp.HackerEAID));
+            a.Show();
 
-            loginWindows.WindowState = WindowState.Normal;
-            loginWindows.ShowInTaskbar = true;
+            a.WindowState = WindowState.Normal;
+            a.ShowInTaskbar = true;
+        }
+
+
+        public void LoadDataGrid()
+        {
+
         }
     }
 

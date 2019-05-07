@@ -41,9 +41,9 @@ namespace OriginReportTools
             this.Show();
         }
 
-        public void OpenEAIDLink(string EALink)
+        public void OpenEAIDLink(string LinkString)
         {
-            LoginBroswer.Navigate("https://www.origin.com/irl/zh-tw/profile/user/" + EALink + "/achievements");
+            LoginBroswer.Navigate("https://www.origin.com/irl/zh-tw/profile/user/" + LinkString + "/achievements");
         }
         public void Login()
         { 
@@ -108,9 +108,10 @@ namespace OriginReportTools
             if (!IsClose)
             {
                 e.Cancel = true;
-                this.Hide();
+                this.Hide();                
                 LoginCanceled?.Invoke();
             }
+             
         }
     }
 }

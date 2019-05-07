@@ -311,12 +311,12 @@
                         </Grid.ColumnDefinitions>
                         <DataGrid x:Name="DataGrid" Grid.Column="0" HorizontalAlignment="Left">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Binding="{Binding Class}"  Header="编号"  Width="50"/>
-                                <DataGridTextColumn Binding="{Binding Key}" Header="作弊者" Width="150"/>
-                                <DataGridTextColumn Binding="{Binding ReportTime}"  Header="状态" Width="80"/>
-                                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="举报时间" Width="100"/>
+                                <DataGridTextColumn Binding="{Binding Key}"  Header="编号"  Width="50"/>
+                                <DataGridTextColumn Binding="{Binding HackName}" Header="作弊者" Width="150"/>
+                                <DataGridTextColumn Binding="{x:Null}"  Header="状态" Width="80"/>
+                                <DataGridTextColumn Binding="{Binding ReportTime}" ClipboardContentBinding="{x:Null}" Header="举报时间" Width="100"/>
                                 <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="上传时间" Width="100"/>
-                                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="举报者" Width="150"/>
+                                <DataGridTextColumn Binding="{Binding PlayerName}" ClipboardContentBinding="{x:Null}" Header="举报者" Width="150"/>
                             </DataGrid.Columns>
                         </DataGrid>
                         <TextBlock TextWrapping="Wrap" Grid.Column="1" Text="本地档案存储在软件下的HackData.dat文件内，请妥善保存" Margin="20,5,0,0" FontWeight="Bold" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top"  />
