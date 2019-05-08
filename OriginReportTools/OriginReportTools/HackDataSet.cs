@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace OriginReportTools
 {
     [Serializable]
-    public struct HackData
+    public class HackData
     {
 
         public int Key { get; set; }
@@ -26,8 +26,16 @@ namespace OriginReportTools
         public string D { get; set; }
         public string IsBan { get; set; }
         public string IsUpToServer { get; set; }
+
+        public string SaveInfo { get; set; }
         public List<string> NameList{get;set;}
         public string HackFirstName { get; set; }
+
+        public HackData()
+        {
+            NameList = new List<string>();
+            HackCheckType = new List<string>();
+        }
     }
 
 }

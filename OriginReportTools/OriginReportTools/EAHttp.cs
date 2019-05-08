@@ -108,9 +108,9 @@ namespace OriginReportTools
         /// </summary>
         /// <param name="ID"></param>
         /// <returns></returns>
-        public string IDGetName(string ID)
+        public string IDGetName(string EAID)
         {
-            String url = "https://api1.origin.com/atom/users?userIds=" + ID;//url
+            String url = "https://api1.origin.com/atom/users?userIds=" + EAID;//url
             var handler = new HttpClientHandler() { UseCookies = false };
             var client = new HttpClient(handler);
             var message = new HttpRequestMessage(HttpMethod.Get, url);
@@ -174,11 +174,10 @@ namespace OriginReportTools
             }
         }
 
-        public bool ReportCheat(string reportUsername, string comment)
+        public bool ReportCheat(string comment)
         {
-            comment = "In BF1 use WallHack \n\rAimbot";
             string userId = PlayerEAID;
-            NameGetID(reportUsername);
+            //NameGetID(reportUsername);
             string reportId = HackerEAID;
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;

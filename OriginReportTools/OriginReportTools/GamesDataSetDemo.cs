@@ -354,8 +354,20 @@ namespace OriginReportTools
                                                     "Assault Main Weapon",
                                                     new object[][]
                                                     {
-                                                        new object[] { "侦察兵主武器A", new GamesDataSet.Game.Arm.EquipmentSet.Equipment("Assault Main Weapon A") },
-                                                        new object[] { "侦察兵主武器B", new GamesDataSet.Game.Arm.EquipmentSet.Equipment("Assault Main Weapon B") }
+                                                         new object[] { "Russian 1895", new GamesDataSet.Game.Arm.EquipmentSet.Equipment("Russian 1895") },
+                                                         new object[] { "Gewehr 98", new GamesDataSet.Game.Arm.EquipmentSet.Equipment("Gewehr 98") },
+                                                         new object[] { "SMLE MKIII", new GamesDataSet.Game.Arm.EquipmentSet.Equipment("SMLE MKIII") },
+                                                         new object[] { "Gewehr M.95", new GamesDataSet.Game.Arm.EquipmentSet.Equipment("Gewehr M.95") },
+                                                         new object[] { "M1903", new GamesDataSet.Game.Arm.EquipmentSet.Equipment("M1903") },
+                                                         new object[] { "马提尼·亨利步枪", new GamesDataSet.Game.Arm.EquipmentSet.Equipment("Martini-Henry") },
+                                                         new object[] { "阿拉伯的劳伦斯的SMLE ", new GamesDataSet.Game.Arm.EquipmentSet.Equipment("Lawrence of Arabia's SMLE") },
+                                                         new object[] { "勒贝尔M1886", new GamesDataSet.Game.Arm.EquipmentSet.Equipment("Lebel Model 1886") },
+                                                         new object[] { "莫辛-纳甘M91", new GamesDataSet.Game.Arm.EquipmentSet.Equipment("Mosin-Nagant M91") },
+                                                         new object[] { "Vetterli-Vitali M1870/87", new GamesDataSet.Game.Arm.EquipmentSet.Equipment("Vetterli-Vitali M1870/87") },
+                                                         new object[] { "三八式步枪", new GamesDataSet.Game.Arm.EquipmentSet.Equipment("Type 38 Arisaka") },
+                                                         new object[] { "卡尔卡诺M91卡宾枪", new GamesDataSet.Game.Arm.EquipmentSet.Equipment("Carcano M91") },
+                                                         new object[] { "罗斯 MKIII", new GamesDataSet.Game.Arm.EquipmentSet.Equipment("Ross MKIII") },
+                                                         new object[] { "变种带消音器的那把狙", new GamesDataSet.Game.Arm.EquipmentSet.Equipment("M1917 Enfield") }
                                                     })
                                             },
                                             new object[] {

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 
 
@@ -38,7 +40,8 @@ namespace OriginReportTools
 
             LoadChEnData();
             HackDateListLoad();
-
+            dataBinding();
+           
             //MainButton = chendata.BF1;
             //chendata.SerializableSave(chendata);
             LoadCheckBox(CHENDATA.Games["战地1"]);
@@ -49,7 +52,8 @@ namespace OriginReportTools
             loginWindows.LoginCanceled += LoginWindow_LoginCanceled;
             loginWindows.Loggeding1 += LoginWindow_Loggeding1;
             loginWindows.Loggeding2 += LoginWindow_Loggeding2;
-            
+            LoadStatus();
+
         }
         /// <summary>
         /// 反序列化翻译数据文件
@@ -83,6 +87,7 @@ namespace OriginReportTools
             Dispatcher.Invoke(new Action(() =>
             {
                 LoginText.Text = "登陆成功";
+                Report_tex.Text = "举报至EA";
                 try
                 {
                     string[] A = token.Split('"');
@@ -167,6 +172,7 @@ namespace OriginReportTools
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             loginWindows.Close();
+            SaveStatus();
 
         }
         /// <summary>
@@ -321,30 +327,95 @@ namespace OriginReportTools
         /// <param name="e"></param>
         private void Report_But_Click(object sender, RoutedEventArgs e)
         {
-            //if (!eahttp.NameGetID(HackName.Text))
-            //{
-            //    MessageBox.Show("该玩家不存在");
-            //    return;
-            //}
-            HackData Hdata = new HackData();
-            Hdata.Key = HackDataList.Count+1;
-            Hdata.NameList.Add(HackName.Text);
-            Hdata.HackEAID = eahttp.HackerEAID;
-            Hdata.HackCheckType = CheckTypesList;
-            Hdata.Game = GameName;
-            Hdata.Class = GameClass.Text;
-            Hdata.Map = GameMap.Text;
-            Hdata.K = K.Text;
-            Hdata.D = D.Text;
-            Hdata.PlayerName = eahttp.PlayerName;
-            Hdata.PlayerEAID = eahttp.PlayerEAID;
-            Hdata.ReportTime = eahttp.GetNetDateTime();
-            HackDataList.Add(Hdata);
-            HackDateListSave(HackDataList);
+            TextProcessing a = new TextProcessing();
+            if (HackName.Text == "")
+                return;
+            if (((TextBlock)((Button)sender).Content).Text == "生成并复制举报文本")
+            {
+                
 
+                List<string> EnCheckTypesList = new List<string>();
+                foreach (string aaa in CheckTypesList)
+                {
+                    EnCheckTypesList.Add(CHENDATA.Games[GameName].CheckTypes[aaa].Name);
+                }
+                string EnGame = CHENDATA.Games[GameName].Name;
+                string EnWeaponList = CHENDATA.Games[GameName].Arms[GameClass.Text].EquipmentSets[WeaponClass.Text].Equipments[WeaponList.Text].Name;
+                string EnClass = CHENDATA.Games[GameName].Arms[GameClass.Text].Name;
+                string EnMap = CHENDATA.Games[GameName].Maps[GameMap.Text].Name;
+
+                Clipboard.SetText(a.AllToComment(EnGame, EnCheckTypesList, EnClass, EnWeaponList, EnMap, K.Text, D.Text));
+                HackData Hdata = new HackData();
+                Hdata.Key = HackDataList.Count + 1;
+                Hdata.NameList.Add(HackName.Text);
+                Hdata.HackEAID = null;
+                Hdata.HackCheckType = CheckTypesList;
+                Hdata.Game = GameName;
+                Hdata.Class = GameClass.Text;
+                Hdata.Map = GameMap.Text;
+                Hdata.K = K.Text;
+                Hdata.D = D.Text;
+                Hdata.PlayerName = "未登陆账户";
+                Hdata.PlayerEAID = null;
+                Hdata.ReportTime = eahttp.GetNetDateTime();
+                Hdata.SaveInfo = "离线档案";
+                Hdata.IsUpToServer = "未上传";
+                Hdata.IsBan = "未检测";
+                HackDataList.Add(Hdata);
+                HackDateListSave(HackDataList);
+                dataBinding();
+                MessageBox.Show("文本已经复制到粘贴板");
+            }
+            else
+            {
+                
+                if (!IDCheck())
+                    return;
+                HackData Hdata = new HackData();
+                Hdata.Key = HackDataList.Count + 1;
+                Hdata.NameList.Add(HackName.Text);
+                Hdata.HackEAID = eahttp.HackerEAID;
+                Hdata.HackCheckType = CheckTypesList;
+                Hdata.Game = GameName;
+                Hdata.Class = GameClass.Text;
+                Hdata.Map = GameMap.Text;
+                Hdata.K = K.Text;
+                Hdata.D = D.Text;
+                Hdata.PlayerName = eahttp.PlayerName;
+                Hdata.PlayerEAID = eahttp.PlayerEAID;
+                Hdata.ReportTime = eahttp.GetNetDateTime();
+                Hdata.SaveInfo = "在线档案";
+                Hdata.IsUpToServer = "未上传";
+                Hdata.IsBan = "未检测";
+                HackDataList.Add(Hdata);
+                HackDateListSave(HackDataList);
+                dataBinding();
+                List<string> EnCheckTypesList = new List<string>();
+                foreach (string aaa in CheckTypesList)
+                {
+                    EnCheckTypesList.Add(CHENDATA.Games[GameName].CheckTypes[aaa].Name);
+                }
+                string EnGame = CHENDATA.Games[GameName].Name;
+                string EnWeaponList = CHENDATA.Games[GameName].Arms[GameClass.Text].EquipmentSets[WeaponClass.Text].Equipments[WeaponList.Text].Name;
+                string EnClass = CHENDATA.Games[GameName].Arms[GameClass.Text].Name;
+                string EnMap = CHENDATA.Games[GameName].Maps[GameMap.Text].Name;
+
+                bool end = eahttp.ReportCheat(a.AllToComment(EnGame, EnCheckTypesList, EnClass, EnWeaponList, EnMap, K.Text, D.Text));
+                if (end)
+                {
+                    MessageBox.Show("举报成功！");
+                }
+                else
+                {
+                    MessageBox.Show("举报失败！");
+                }
+
+
+                
+            }
         }
 
-        public void IDCheck()
+        public bool IDCheck()
         {
             bool a = eahttp.NameGetID(HackName.Text);
             if (a == true & eahttp.HackerEAID != "failure")
@@ -362,6 +433,7 @@ namespace OriginReportTools
                 A.Text = "该玩家不存在";
                 A.Foreground = Brushes.Red;
             }
+            return a;
         }
 
         private void HackName_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -385,24 +457,35 @@ namespace OriginReportTools
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_CheckName(object sender, RoutedEventArgs e)
         {
-            dataBinding();
-        }
-
-        public void ReLoadName()
-        {
-            foreach (HackData a in HackDataList)
+            if (IsLoaded)
             {
-               // a.HackName=a.NameList[]
+                foreach (HackData Data in HackDataList)
+                {
+                    if (Data.HackEAID == null)
+                    {
+
+                    }
+                   string newName =  eahttp.IDGetName(Data.HackEAID);
+                    if (newName != Data.NameList[Data.NameList.Count-1])
+                    {
+                        Data.NameList.Add(newName);
+                    }
+
+                }
+
             }
         }
 
+
         public void dataBinding()
         {
+            DataGrid.ItemsSource = null;
             DataGrid.ItemsSource = HackDataList;
             DataGrid.AutoGenerateColumns = false;//禁止自动添加列
             DataGrid.CanUserAddRows = true;//禁止自动添加行
+
            // PlayerName.Text = ps1.ReportTime.ToLocalTime().ToString();时间转换
            // DateTime c =  DateTime.Parse(PlayerName.Text);
         }
@@ -416,7 +499,6 @@ namespace OriginReportTools
         [Serializable]
         class Status
         {
-            public string PlayerId, PlayerName, Email;
             public bool IsLoggedIn;
         }
         public void SaveStatus()
@@ -432,7 +514,7 @@ namespace OriginReportTools
                 //IsSpeedHacked = SpeedHackedCkb.IsChecked == true,
                 //IsDamageHacked = DamageHackedCkb.IsChecked == true,
                 //IsSaveImg = SaveImgCkb.IsChecked == true,
-                //IsLoggedIn = ea != null
+                IsLoggedIn = eahttp.Token != null
             };
 
             string fileDirectory = Environment.CurrentDirectory + "\\";
@@ -470,7 +552,11 @@ namespace OriginReportTools
                 //SaveImgCkb.IsChecked = status.IsSaveImg;
 
                 if (status.IsLoggedIn)
+                {
                     LoginBtn_Click(null, null);
+                }
+                Report_tex.Text = "生成并复制举报文本";
+
 
                 return true;
             }
@@ -512,12 +598,22 @@ namespace OriginReportTools
             }
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private void Button_OpenEAWeb(object sender, RoutedEventArgs e)
         {
-            eahttp.NameGetID(HackName.Text);
-            InfoWindows a= new InfoWindows(eahttp.IDgetLink(eahttp.HackerEAID));
+            InfoWindows a;
+            HackData data = DataGrid.SelectedItem as HackData;
+            if (data.HackEAID == null)
+            {
+                MessageBox.Show("该档案为离线档案，只能通过名字检索打开对方资料页，如果对方改名，将无法正确访问主页");
+                eahttp.NameGetID(data.HackName);
+                a = new InfoWindows(eahttp.IDgetLink(eahttp.HackerEAID));
+                eahttp.HackerEAID = null;
+            }
+            else
+            {
+                a = new InfoWindows(eahttp.IDgetLink(data.HackEAID));
+            }
             a.Show();
-
             a.WindowState = WindowState.Normal;
             a.ShowInTaskbar = true;
         }
@@ -527,7 +623,78 @@ namespace OriginReportTools
         {
 
         }
+
+        private void Button_Remove(object sender, RoutedEventArgs e)
+        {
+             HackData a =DataGrid.SelectedItem as HackData;
+            HackDataList.Remove(a);
+            HackDateListSave(HackDataList);
+            dataBinding();
+        }
+
+
     }
+    /// <summary>
+    /// 获取作弊玩家被举报后的最新ID
+    /// </summary>
+    public class HackNameConverter : IValueConverter
+    {
+
+        /// <summary>
+        /// 将Statu转换为bool?
+        /// </summary>
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            List<string> s = (List<string>)value;
+            return s[s.Count-1];
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 将bool?转换为Statu
+        /// </summary>
+
+    }
+    /// <summary>
+    /// 获取作弊玩家被举报时的ID
+    /// </summary>
+
+    public class HackFirstNameConverter : IValueConverter
+    {
 
 
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            List<string> s = (List<string>)value;
+            return s[0];
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
+    }
+    public class ReportTimeConverter : IValueConverter
+    {
+
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            DateTime s = (DateTime)value;
+            s=s.ToLocalTime();
+            string a = s.ToString();
+            return a;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
+    }
 }

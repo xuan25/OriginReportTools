@@ -18,7 +18,7 @@ namespace OriginReportTools
         public App()
         {
            GamesDataSetDemo Data = new GamesDataSetDemo();
-         SerializableSave(Data.Data);
+           SerializableSave(Data.Data);
 
 
         }

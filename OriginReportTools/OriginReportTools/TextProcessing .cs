@@ -61,8 +61,12 @@ namespace OriginReportTools
 
         public string AllToComment(string Game, List<string> CheckTypesList, string Class, string Weapon, string Map, string K, string D)
         {
+
+
+
+
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append("Cheater's in-"+Game+": ");
+            stringBuilder.AppendLine("Cheater's in-"+Game);
             stringBuilder.AppendLine("--------");
             foreach (string a in CheckTypesList)
             {

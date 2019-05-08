@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OriginReportTools"
         mc:Ignorable="d"
-        Title="MainWindow" Height="481.707" Width="1137.781" MinWidth="1137.781" MinHeight="481.707" Closing="Window_Closing">
+        Title="MainWindow" Height="541.707" Width="1243.781" MinWidth="1264.781" MinHeight="508.707" Closing="Window_Closing" PresentationTraceSources.TraceLevel="High">
     <Window.Resources>
         <ControlTemplate x:Key="TabItemControlTemplate1" TargetType="{x:Type TabItem}">
             <Grid x:Name="templateRoot" SnapsToDevicePixels="True">
@@ -205,6 +205,9 @@
                 </MultiDataTrigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
+        <local:HackNameConverter x:Key="HackName"></local:HackNameConverter>
+        <local:HackNameConverter x:Key="HackFirstName"></local:HackNameConverter>
+        <local:ReportTimeConverter x:Key="ReportTime"></local:ReportTimeConverter>
     </Window.Resources>
     <Grid ShowGridLines="False">
         <Grid.ColumnDefinitions>
@@ -226,9 +229,9 @@
                         <Image Width="50" Height="50" Margin="5,5,5,5" HorizontalAlignment="Left" VerticalAlignment="Center" Source="BFV.png"></Image>
                     </Button.Content>
                 </Button>
-                <Button  x:Name="APEX_B" Click="APEX_B_Click" BorderThickness="0,0,0,0" BorderBrush="#FFFF9A45" Background="{x:Null}">
+                <Button  x:Name="APEX_B" Click="APEX_B_Click" BorderThickness="0,0,0,0" BorderBrush="#FFFF9A45" Background="{x:Null}" IsEnabled="False">
                     <Button.Content>
-                        <Image Width="50" Height="50" Margin="5,5,5,5" HorizontalAlignment="Center" VerticalAlignment="Center" Source="APEX.png"></Image>
+                        <Image Width="50" Height="50" Margin="5,5,5,5" HorizontalAlignment="Center" VerticalAlignment="Center" Source="APEX.png"/>
                     </Button.Content>
                 </Button>
             </StackPanel>
@@ -278,22 +281,22 @@
                         <TextBlock Grid.Row="4" Grid.Column="0" Text="武器" FontSize="20" Margin="14,0,14,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         <WrapPanel Grid.Row="4" Grid.Column="1" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Center" >
                             <ComboBox x:Name="WeaponClass" Width="116" DropDownOpened="WeaponClass_DropDownOpened"></ComboBox>
-                            <ComboBox x:Name="WeaponList" Margin="20,0,0,0" Width="359" DropDownOpened="WeaponList_DropDownOpened"></ComboBox>
+                            <ComboBox x:Name="WeaponList" Margin="20,0,0,0" Width="200" DropDownOpened="WeaponList_DropDownOpened"></ComboBox>
                         </WrapPanel>
 
                         <TextBlock Grid.Row="5" Grid.Column="0" Text="杀敌/死亡" FontSize="20" Margin="14,0,14,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <WrapPanel Grid.Row="5" Grid.Column="1" Margin="10" VerticalAlignment="Center" >
+                        <WrapPanel Grid.Row="5" Grid.Column="1" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Left" >
                             <TextBox x:Name="K"  FontSize="20" Width="65" ></TextBox>
                             <TextBox x:Name="D" Margin="20,0,0,0"  FontSize="20" Width="65" ></TextBox>
                         </WrapPanel>
 
                         <TextBlock Grid.Row="6" Grid.Column="0" Text="地图" FontSize="20" Margin="14,0,14,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <WrapPanel Grid.Row="6" Grid.Column="1" Margin="10" VerticalAlignment="Center" >
+                        <WrapPanel Grid.Row="6" Grid.Column="1" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Left" >
                             <ComboBox x:Name="GameMap" Width="220"></ComboBox>
                         </WrapPanel>
                         <Button x:Name="Report_But" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Right" Click="Report_But_Click">
                             <Button.Content>
-                                <TextBlock Text="举报至EA" Margin="10,10,10,10" FontWeight="Bold" FontSize="20" />
+                                <TextBlock x:Name="Report_tex" Text="举报至EA" Margin="10,10,10,10" FontWeight="Bold" FontSize="20" />
                             </Button.Content>
                         </Button>
                     </Grid>
@@ -309,51 +312,58 @@
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <DataGrid x:Name="DataGrid" Grid.Column="0" HorizontalAlignment="Left" Height="392" Margin="0,0,0,0.5" VerticalAlignment="Bottom">
+                        <DataGrid x:Name="DataGrid" Grid.Column="0" HorizontalAlignment="Left"  Margin="0,0,0,0">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Binding="{Binding Key}"  Header="编号"  Width="50"/>
-                                <DataGridTextColumn Binding="{Binding Game}"  Header="游戏"  Width="50"/>
-                                <DataGridTextColumn Binding="{Binding HackName}" Header="作弊者ID" Width="150"/>
-                                <DataGridTextColumn Binding="{Binding HackFirstName}" Header="作弊者历史ID" Width="150"/> 
-                                <DataGridTextColumn Binding="{Binding IsBan}"  Header="封号状态" Width="80"/>
-                                <DataGridTextColumn Binding="{Binding ReportTime}" ClipboardContentBinding="{x:Null}" Header="举报时间" Width="100"/>
-                                <DataGridTextColumn Binding="{Binding IsUpToServer}" ClipboardContentBinding="{x:Null}" Header="上传状态" Width="100"/>
-                                <DataGridTextColumn Binding="{Binding PlayerName}" ClipboardContentBinding="{x:Null}" Header="举报者" Width="150"/>
+                                <DataGridTextColumn Binding="{Binding Key,Mode=OneWay}"  Header="编号"  Width="45"/>
+                                <DataGridTextColumn Binding="{Binding Game,Mode=OneWay}"  Header="游戏"  Width="45"/>
+                                <DataGridTextColumn Binding="{Binding NameList,Mode=OneWay,Converter={StaticResource HackName}}" Header="作弊者ID" Width="150"/>
+                                <DataGridTextColumn Binding="{Binding NameList,Mode=OneWay,Converter={StaticResource HackFirstName}}" Header="作弊者历史ID" Width="150"/>
+                                <DataGridTextColumn Binding="{Binding IsBan,Mode=OneWay}"  Header="封号状态" Width="65"/>
+                                <DataGridTextColumn Binding="{Binding ReportTime,Mode=OneWay,Converter={StaticResource ReportTime}}" ClipboardContentBinding="{x:Null}" Header="举报时间" Width="110"/>
+                                <DataGridTextColumn Binding="{Binding IsUpToServer,Mode=OneWay}" ClipboardContentBinding="{x:Null}" Header="上传状态" Width="75"/>
+                                <DataGridTextColumn Binding="{Binding PlayerName,Mode=OneWay}" ClipboardContentBinding="{x:Null}" Header="举报者" Width="150"/>
+                                <DataGridTextColumn Binding="{Binding SaveInfo,Mode=OneWay}" ClipboardContentBinding="{x:Null}" Header="档案状态" Width="65"/>
                             </DataGrid.Columns>
                         </DataGrid>
-                        <TextBlock TextWrapping="Wrap" Grid.Column="1" Text="本地档案存储在软件下的HackData.dat文件内，请妥善保存" Margin="20,5,0,0" FontWeight="Bold" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top"  />
+                        
+                        
                         <StackPanel Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,5,0,5">
-                            <Button  Margin="0,5,0,5" Click="Button_Click"  >
+                            <Button  Margin="0,5,0,5" Click="Button_OpenEAWeb" >
+                                <Button.Content>
+                                    <TextBlock  Text="打开EA资料页" Margin="7" FontWeight="Bold" FontSize="15" />
+                                </Button.Content>
+                            </Button>
+                            <Button  Margin="0,5,0,5" Click="Button_CheckName"  >
                                 <Button.Content>
                                     <TextBlock  Text="批量检测名字" Margin="7" FontWeight="Bold" FontSize="15" />
                                 </Button.Content>
                             </Button>
                             <TextBlock Text="获取对方的最新ID,防止改名"   FontWeight="Bold" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"  />
-                            <Button  Margin="0,5,0,5" Click="Button_Click_1" >
+                            <Button  Margin="0,5,0,5" IsEnabled="False" >
                                 <Button.Content>
                                     <TextBlock  Text="作弊战局匹配" Margin="7" FontWeight="Bold" FontSize="15" />
                                 </Button.Content>
                             </Button>
 
-                            <Button Margin="0,5,0,5" >
+                            <Button Margin="0,5,0,5" IsEnabled="False" >
                                 <Button.Content>
                                     <TextBlock  Text="批量封号查询" Margin="7" FontWeight="Bold" FontSize="15" />
                                 </Button.Content>
                             </Button>
 
-                            <Button Margin="0,5,0,5" Click="Button_Click_2" >
+                            <Button Margin="0,5,0,5" IsEnabled="False"  >
                                 <Button.Content>
                                     <TextBlock  Text="同步至档案服务器" Margin="7" FontWeight="Bold" FontSize="15" />
                                 </Button.Content>
                             </Button>
                             <TextBlock  Text="将已经上传的档案状态同步至服务器" FontWeight="Bold" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             <TextBlock  Text="并非是上传档案到服务器" FontWeight="Bold" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            <Button  Margin="0,5,0,5" >
+                            <Button  Margin="0,5,0,5" Click="Button_Remove" >
                                 <Button.Content>
                                     <TextBlock  Text="删除档案" Margin="7" FontWeight="Bold" FontSize="15" />
                                 </Button.Content>
                             </Button>
-                            <Button Margin="0,5,0,5" >
+                            <Button Margin="0,5,0,5" IsEnabled="False" >
                                 <Button.Content>
                                     <TextBlock  Text="与服务器同步档案" Margin="7" FontWeight="Bold" FontSize="15" />
                                 </Button.Content>
