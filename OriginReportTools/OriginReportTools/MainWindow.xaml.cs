@@ -18,6 +18,8 @@ namespace OriginReportTools
     public partial class MainWindow : Window
     {
         LoginWindows loginWindows;
+        BFtracker bFtracker;
+
 
         EAHttp eahttp = new EAHttp();
         /// <summary>
@@ -53,7 +55,7 @@ namespace OriginReportTools
             loginWindows.Loggeding1 += LoginWindow_Loggeding1;
             loginWindows.Loggeding2 += LoginWindow_Loggeding2;
             LoadStatus();
-           BFtracker bFtracker = new BFtracker();
+           //BFtracker bFtracker = new BFtracker(HackName.Text);
         }
         /// <summary>
         /// 反序列化翻译数据文件
@@ -173,6 +175,7 @@ namespace OriginReportTools
         {
             loginWindows.Close();
             SaveStatus();
+
 
         }
         /// <summary>
@@ -634,7 +637,28 @@ namespace OriginReportTools
             dataBinding();
         }
 
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (!IDCheck())
+                return;
+            bFtracker= new BFtracker(HackName.Text);
+            bFtracker.Show();
 
+          
+        }
+
+        private void EAWeb_Click(object sender, RoutedEventArgs e)
+        {
+            if (!IDCheck())
+                return;
+            InfoWindows a;
+
+            a = new InfoWindows(eahttp.IDgetLink(eahttp.HackerEAID));
+            a.Show();
+            a.WindowState = WindowState.Normal;
+            a.ShowInTaskbar = true;
+
+        }
     }
     /// <summary>
     /// 获取作弊玩家被举报后的最新ID

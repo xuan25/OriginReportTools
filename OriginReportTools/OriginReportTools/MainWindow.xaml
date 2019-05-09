@@ -264,6 +264,12 @@
                             <TextBox x:Name="HackName" FontSize="20" Width="300" KeyDown="HackName_KeyDown"/>
                             <TextBlock x:Name="A" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Margin="17,0,0,0">按回车验证ID</TextBlock>
                             <TextBlock x:Name="A1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Margin="17,0,0,0">[状态]</TextBlock>
+                            <Button x:Name="Results" Margin="17,0,0,0" Click="Button_Click">
+                                <TextBlock>战绩分析</TextBlock>
+                            </Button>
+                            <Button x:Name="EAWeb" Margin="17,0,0,0" Click="EAWeb_Click">
+                                <TextBlock>资料页</TextBlock>
+                            </Button>
                         </WrapPanel>
 
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="作弊内容" FontSize="20" Margin="14,0,14,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>

@@ -7,6 +7,26 @@
         mc:Ignorable="d"
         Title="BFtracker" Height="479.428" Width="868.665">
     <Grid>
+        <DataGrid x:Name="DataGrid" SelectionChanged="DataGrid_SelectionChanged" HeadersVisibility="Column" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <DataGrid.Columns>
 
+                <DataGridTextColumn Binding="{Binding Score_min,Mode=OneWay}"  Header="得分/每分钟"/>
+                <DataGridTextColumn Binding="{Binding KD,Mode=OneWay}" Header="KD"/>
+                <DataGridTextColumn Binding="{Binding Rank,Mode=OneWay}" Header="等级"/>
+                <DataGridTextColumn Binding="{Binding winP,Mode=OneWay}" Header="胜率"/>
+                <DataGridTextColumn Binding="{Binding Kill,Mode=OneWay}" Header="杀敌"/>
+                <DataGridTextColumn Binding="{Binding KPM,Mode=OneWay}" Header="杀敌/每分钟"/>
+                <DataGridTextColumn Binding="{Binding Wins,Mode=OneWay}" Header="胜场"/>
+                <DataGridTextColumn Binding="{Binding Deaths,Mode=OneWay}" Header="死亡"/>
+                <DataGridTextColumn Binding="{Binding Assists,Mode=OneWay}" Header="助攻得分"/>
+                <DataGridTextColumn Binding="{Binding Damage,Mode=OneWay}" Header="伤害得分"/>
+                <DataGridTextColumn Binding="{Binding Heals,Mode=OneWay}" Header="治疗得分"/>
+                <DataGridTextColumn Binding="{Binding Revives,Mode=OneWay}" Header="救治得分"/>
+                <DataGridTextColumn Binding="{Binding Resupplies,Mode=OneWay}" Header="补给得分"/>
+
+
+            </DataGrid.Columns>
+
+        </DataGrid>
     </Grid>
 </Window>
