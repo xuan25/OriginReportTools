@@ -53,7 +53,7 @@ namespace OriginReportTools
             loginWindows.Loggeding1 += LoginWindow_Loggeding1;
             loginWindows.Loggeding2 += LoginWindow_Loggeding2;
             LoadStatus();
-
+           BFtracker bFtracker = new BFtracker();
         }
         /// <summary>
         /// 反序列化翻译数据文件
@@ -441,6 +441,8 @@ namespace OriginReportTools
             if (e.Key == System.Windows.Input.Key.Enter)
             {
                 IDCheck();
+                Clipboard.SetText(eahttp.HackerEAID);
+                
             }
             if (e.Key == System.Windows.Input.Key.Tab)
             {

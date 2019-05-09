@@ -55,10 +55,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BFtracker.xaml.cs">
+      <DependentUpon>BFtracker.xaml</DependentUpon>
+    </Compile>
     <Compile Include="InfoWindows.xaml.cs">
       <DependentUpon>InfoWindows.xaml</DependentUpon>
     </Compile>
     <Compile Include="TextProcessing .cs" />
+    <Page Include="BFtracker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="InfoWindows.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -20,7 +20,6 @@ namespace OriginReportTools
            GamesDataSetDemo Data = new GamesDataSetDemo();
            SerializableSave(Data.Data);
 
-
         }
         public void SerializableSave(GamesDataSet chEnData)
         {
