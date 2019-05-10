@@ -641,7 +641,7 @@ namespace OriginReportTools
         {
             if (!IDCheck())
                 return;
-            bFtracker= new BFtracker(HackName.Text);
+            bFtracker= new BFtracker(HackName.Text,eahttp.Token);
             bFtracker.Show();
 
           

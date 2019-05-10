@@ -125,7 +125,11 @@ namespace OriginReportTools
             return GameName;
         }
 
-
+        /// <summary>
+        /// 通过EAID获取主页链接
+        /// </summary>
+        /// <param name="EAID"></param>
+        /// <returns></returns>
         public string IDgetLink(string EAID)
         {
             try
@@ -148,7 +152,11 @@ namespace OriginReportTools
             }
 
         }
-
+        /// <summary>
+        /// 通过名字获取EAID
+        /// </summary>
+        /// <param name="GameName"></param>
+        /// <returns></returns>
 
         public bool NameGetID(string GameName)
         {
@@ -173,6 +181,11 @@ namespace OriginReportTools
                 return false;
             }
         }
+        /// <summary>
+        /// 发送举报给EA的文本
+        /// </summary>
+        /// <param name="comment"></param>
+        /// <returns></returns>
 
         public bool ReportCheat(string comment)
         {
