@@ -417,7 +417,10 @@ namespace OriginReportTools
                 
             }
         }
-
+        /// <summary>
+        /// 检查HackName输入框的内容，并返回一个布尔值告知ID是否存在
+        /// </summary>
+        /// <returns>返回True是ID存在，反之不存在</returns>
         public bool IDCheck()
         {
             bool a = eahttp.NameGetID(HackName.Text);
@@ -438,12 +441,17 @@ namespace OriginReportTools
             }
             return a;
         }
-
+        /// <summary>
+        /// HackName里按下Tab或Enter时触发该方法
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void HackName_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
                 IDCheck();
+                    
                 Clipboard.SetText(eahttp.HackerEAID);
                 
             }

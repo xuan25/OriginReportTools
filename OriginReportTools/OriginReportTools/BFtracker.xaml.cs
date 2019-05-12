@@ -55,8 +55,9 @@ namespace OriginReportTools
 
         public async Task GetData()
         {
-            bool wait = await GetData(Type.Overview);
-            bool wait1 = await GetData(Type.Class);
+            bool wait1 = await GetData(Type.Overview);
+            bool wait2 = await GetData(Type.Class);
+            bool wait3 = await GetData(Type.Weapons);
 
 
 
@@ -112,10 +113,7 @@ namespace OriginReportTools
             WebRequest request = WebRequest.Create(string.Format("https://battlefieldtracker.com/bfv/profile/origin/{0}/{1}", Name, WebLink));
             WebResponse response = await request.GetResponseAsync();
             StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding("UTF-8"));
-
             EndRead = reader.ReadToEnd();
-            GetInfo();
-            GetImg();
             Regex rg1 = new Regex("(?<=(" + Regex1 + "))[.\\s\\S]*?(?=(</span>))", RegexOptions.Multiline | RegexOptions.Singleline);
             Regex rg2 = new Regex("(?<=(" + Regex2 + "))[.\\s\\S]*?(?=(</span>))", RegexOptions.Multiline | RegexOptions.Singleline);
             List<string> A = new List<string>();
@@ -139,6 +137,8 @@ namespace OriginReportTools
                     A1.Add(new PlayerTotal(A));
                     A1.Add(new PlayerTotal(B));
                     DataGrid.ItemsSource = A1;
+                    GetInfo();
+                    GetImg();
                     break;
 
                 case Type.Class:
