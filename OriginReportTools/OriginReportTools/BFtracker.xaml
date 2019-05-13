@@ -25,13 +25,13 @@
                 <StackPanel Margin="17" HorizontalAlignment="Left" VerticalAlignment="Top" >
 
                     <TextBlock>总览</TextBlock>
-                    <DataGrid  x:Name="DataGrid" SelectionChanged="DataGrid_SelectionChanged" HeadersVisibility="Column" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <DataGrid  x:Name="DataGridOverview" HeadersVisibility="Column" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <DataGrid.Columns>
 
-                            <DataGridTextColumn Binding="{Binding Score_min,Mode=OneWay}"  Header="得分/每分钟"/>
+                            <DataGridTextColumn Binding="{Binding ScoreMin,Mode=OneWay}"  Header="得分/每分钟"/>
                             <DataGridTextColumn Binding="{Binding KD,Mode=OneWay}" Header="KD"/>
                             <DataGridTextColumn Binding="{Binding Rank,Mode=OneWay}" Header="等级"/>
-                            <DataGridTextColumn Binding="{Binding winP,Mode=OneWay}" Header="胜率"/>
+                            <DataGridTextColumn Binding="{Binding WinP,Mode=OneWay}" Header="胜率"/>
                             <DataGridTextColumn Binding="{Binding Kill,Mode=OneWay}" Header="杀敌"/>
                             <DataGridTextColumn Binding="{Binding KPM,Mode=OneWay}" Header="杀敌/每分钟"/>
                             <DataGridTextColumn Binding="{Binding Wins,Mode=OneWay}" Header="胜场"/>
@@ -45,12 +45,12 @@
 
                     </DataGrid>
                     <TextBlock>兵种概览</TextBlock>
-                    <DataGrid x:Name="DataGridClass" SelectionChanged="DataGrid_SelectionChanged" HeadersVisibility="Column" VerticalAlignment="Center" HorizontalAlignment="Left">
+                    <DataGrid x:Name="DataGridClasses" HeadersVisibility="Column" VerticalAlignment="Center" HorizontalAlignment="Left">
                         <DataGrid.Columns>
                             <DataGridTextColumn Binding="{Binding ClassName,Mode=OneWay}"  Header="兵种" CanUserSort="False"/>
                             <DataGridTextColumn Binding="{Binding Rank,Mode=OneWay}" Header="等级" CanUserSort="False"/>
                             <DataGridTextColumn Binding="{Binding Score,Mode=OneWay}"  Header="得分" CanUserSort="False"/>
-                            <DataGridTextColumn Binding="{Binding Score_min,Mode=OneWay}"  Header="得分/每分钟" CanUserSort="False"/>
+                            <DataGridTextColumn Binding="{Binding ScoreMin,Mode=OneWay}"  Header="得分/每分钟" CanUserSort="False"/>
                             <DataGridTextColumn Binding="{Binding Kill,Mode=OneWay}" Header="杀敌" CanUserSort="False"/>
                             <DataGridTextColumn Binding="{Binding KPM,Mode=OneWay}" Header="杀敌/每分钟" CanUserSort="False"/>
                             <DataGridTextColumn Binding="{Binding KD,Mode=OneWay}" Header="KD" CanUserSort="False"/>
@@ -59,7 +59,7 @@
 
                     </DataGrid>
                     <TextBlock>武器总览</TextBlock>
-                    <DataGrid x:Name="DataGridWeapons" SelectionChanged="DataGrid_SelectionChanged" HeadersVisibility="Column" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <DataGrid x:Name="DataGridWeapons" HeadersVisibility="Column" HorizontalAlignment="Left" VerticalAlignment="Top">
                         <DataGrid.Columns>
 
                             <DataGridTextColumn Binding="{Binding WeaponName,Mode=OneWay}"  Header="武器名称" CanUserSort="False"/>
@@ -75,15 +75,14 @@
 
                     </DataGrid>
                     <TextBlock>载具总览</TextBlock>
-                    <DataGrid x:Name="DataGridTransports" SelectionChanged="DataGrid_SelectionChanged" HeadersVisibility="Column" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <DataGrid x:Name="DataGridVehicles" HeadersVisibility="Column" HorizontalAlignment="Left" VerticalAlignment="Top">
                         <DataGrid.Columns>
 
-                            <DataGridTextColumn Binding="{Binding ClassName,Mode=OneWay}"  Header="载具名称" CanUserSort="False"/>
+                            <DataGridTextColumn Binding="{Binding VehicleName,Mode=OneWay}"  Header="载具名称" CanUserSort="False"/>
                             <DataGridTextColumn Binding="{Binding Kill,Mode=OneWay}" Header="杀敌" CanUserSort="False"/>
                             <DataGridTextColumn Binding="{Binding KPM,Mode=OneWay}" Header="杀敌/每分钟" CanUserSort="False"/>
-                            <DataGridTextColumn Binding="{Binding Rank,Mode=OneWay}" Header="使用时间" CanUserSort="False"/>
-                            <DataGridTextColumn Binding="{Binding Score,Mode=OneWay}"  Header="开火次数" CanUserSort="False"/>
-                            <DataGridTextColumn Binding="{Binding Score_min,Mode=OneWay}"  Header="摧毁" CanUserSort="False"/>
+                            <DataGridTextColumn Binding="{Binding TimePlayed,Mode=OneWay}" Header="使用时间" CanUserSort="False"/>
+                            <DataGridTextColumn Binding="{Binding Destroyed,Mode=OneWay}"  Header="摧毁" CanUserSort="False"/>
 
 
                         </DataGrid.Columns>

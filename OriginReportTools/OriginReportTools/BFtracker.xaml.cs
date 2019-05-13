@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,362 +23,191 @@ namespace OriginReportTools
     /// </summary>
     public partial class BFtracker : Window
     {
-        string str;
-        string Name;
-        string Regex1;
-        string Regex2;
-        string WebLink;
-        string Token;
-        string EndRead;
-        List<Data> B;
-        
-        int b;
-
         public BFtracker(string PlayerName,string token)
         {
             InitializeComponent();
             Title = PlayerName+"-战绩查询工具";
             Name = PlayerName;
-            DataGrid.AutoGenerateColumns = false;
-            DataGrid.CanUserAddRows = true;
+            DataGridOverview.AutoGenerateColumns = false;
+            DataGridOverview.CanUserAddRows = true;
 
-            DataGridClass.AutoGenerateColumns = false;
-            DataGridClass.CanUserAddRows = true;
+            DataGridClasses.AutoGenerateColumns = false;
+            DataGridClasses.CanUserAddRows = true;
 
             DataGridWeapons.AutoGenerateColumns = false;
             DataGridWeapons.CanUserAddRows = true;
-            //Task<List<Data>> Weapon = GetData(Type.Weapons);
-            //  Task<bool> wait = GetData(Type.Overview);
-            GetData();
-           
 
-            //Task<List<Data>> vehicles = GetData(Type.vehicles);
-            //Task<List<Data>> Class = GetData(Type.Class);
+            DataGridVehicles.AutoGenerateColumns = false;
+            DataGridVehicles.CanUserAddRows = true;
 
+            ShowDataAsync();
         }
 
-        public async Task GetData()
+        private async void ShowDataAsync()
         {
-            bool wait1 = await GetData(Type.Overview);
-            bool wait2 = await GetData(Type.Class);
-            bool wait3 = await GetData(Type.Weapons);
-        }
-
-
-
-
-        public enum Type
-        {
-            Overview,
-
-            Class,
-
-            Weapons,
-
-            vehicles,
-
-        }
-        public async Task <bool> GetData(Type type)
-        {
-            switch (type)
-            {
-                case Type.Overview:
-                    WebLink = "overview";
-                    Regex1 = "<span class=\"value\" data-v-abae987e>";
-                    Regex2 = "<span class=\"rank\" data-v-abae987e>";
-                    b = 0;
-                    break;
-
-                case Type.Class:
-                    WebLink = "overview";
-                    Regex1 = "<span class=\"name\" data-v-05d7549d data-v-2785eb0c>";
-                    Regex2 = "<span class=\"sub\" data-v-05d7549d data-v-2785eb0c>";
-                    b = 1;
-                    break;
-
-                case Type.Weapons:
-                    WebLink = "weapons";
-                    Regex1 = "<span class=\"name\" data-v-05d7549d data-v-ae988792>";
-                    Regex2 = "<span class=\"sub\" data-v-05d7549d data-v-ae988792>";
-                    b = 0;
-                    break;
-
-                case Type.vehicles:
-                    WebLink = "vehicles";
-                    Regex1 = "<span class=\"name\" data-v-05d7549d data-v-65ae7756>";
-                    Regex2 = "<span class=\"sub\" data-v-05d7549d data-v-65ae7756>";
-                    b = 0;
-                    break;    
-            }
-            WebRequest request = WebRequest.Create(string.Format("https://battlefieldtracker.com/bfv/profile/origin/{0}/{1}", Name, WebLink));
+            WebRequest request = WebRequest.Create(string.Format("https://battlefieldtracker.com/bfv/profile/origin/{0}", Name));
             WebResponse response = await request.GetResponseAsync();
             StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding("UTF-8"));
-            EndRead = reader.ReadToEnd();
-            Regex rg1 = new Regex("(?<=(" + Regex1 + "))[.\\s\\S]*?(?=(</span>))", RegexOptions.Multiline | RegexOptions.Singleline);
-            Regex rg2 = new Regex("(?<=(" + Regex2 + "))[.\\s\\S]*?(?=(</span>))", RegexOptions.Multiline | RegexOptions.Singleline);
-            List<string> A = new List<string>();
-            List<string> B = new List<string>();
-            switch (type)
+            string result = reader.ReadToEnd();
+            Match jsonMatch = Regex.Match(result, "(?<=__INITIAL_STATE__=)(.+?)(?=;)");
+            if (jsonMatch.Success)
             {
-                case Type.Overview:
-                    A.Clear();
-                    B.Clear();
-                    List<PlayerTotal> A1 = new List<PlayerTotal>();
-                    List<PlayerTotal> A2 = new List<PlayerTotal>();
-                    foreach (Match a in rg1.Matches(EndRead))
-                    {
-                        A.Add(a.Value);
-                       
-                    }
+                IJson json = JsonParser.Parse(jsonMatch.Value);
+                IJson profile = json.GetValue("bfv\\u002fstats").GetValue("customPlayers").GetValue(string.Format("bfv|origin|{0}", Name));
 
-                    foreach (Match a in rg2.Matches(EndRead))
-                    {
-                        B.Add(a.Value);
-                    }
-                    b = 0;
-                    A1.Add(new PlayerTotal(A));
-                    A1.Add(new PlayerTotal(B));
-                    A2.Add(new PlayerTotal(A));
-                    DataGrid.ItemsSource = A2;
-                    GetInfo();
-                    GetImg();
-                    break;
+                Overview overview = new Overview(profile);
+                List<Overview> overviews = new List<Overview>(new Overview[] { overview });
+                DataGridOverview.ItemsSource = overviews;
+                PlayTime.Text = overview.PlayedTime;
+                LastPlayTime.Text = overview.LastPlayed;
 
-                case Type.Class:
-                    
-                    A.Clear();
-                    B.Clear();
-                    List<Class> C1 = new List<Class>();
-                    List<Class> C2 = new List<Class>();
-                    foreach (Match a in rg1.Matches(EndRead))
-                    {
-                        A.Add(a.Value);
-                    }
-                    A.RemoveAt(0);
-                    foreach (Match a in rg2.Matches(EndRead))
-                    {
-                        B.Add(a.Value);
-                    }
-                    int cp = 0;
-                    for (int i = 0; i < 6; i++)
-                    {
-                        C2.Add(new Class(A, cp));
-                        C1.Add(new Class(A, cp));
-                        C1.Add(new Class(B, cp));
-                        cp += 7;
-                    }
+                List<Class> classes = new List<Class>();
+                foreach(IJson i in profile.GetValue("classes"))
+                {
+                    Class @class = new Class(i);
+                    classes.Add(@class);
+                }
+                DataGridClasses.ItemsSource = classes;
 
-                    DataGridClass.ItemsSource = C1;
-                    break;
+                List<Weapon> weapons = new List<Weapon>();
+                foreach (IJson i in profile.GetValue("weapons"))
+                {
+                    Weapon weapon = new Weapon(i);
+                    weapons.Add(weapon);
+                }
+                DataGridWeapons.ItemsSource = weapons;
 
-                case Type.Weapons:
-                    A.Clear();
-                    B.Clear();
-                    List<Weapons> W1 = new List<Weapons>();
-                    List<Weapons> W2 = new List<Weapons>();
-                    foreach (Match a in rg1.Matches(EndRead))
-                    {
-                        A.Add(a.Value);
-                    }
-                    foreach (Match a in rg2.Matches(EndRead))
-                    {
-                        B.Add(a.Value);
-                    }
-                    cp = 0;
-                    for (int i = 0; i <(A.Count)/8 ; i++)
-                    {
-                        W2.Add(new Weapons(A, cp));
-                        W1.Add(new Weapons(A, cp));
-                        W1.Add(new Weapons(B, cp));
-                        cp += 8;
-                    }
-                    DataGridWeapons.ItemsSource = W2;
-                   // DataGridWepons.ItemsSource = W1;
-                    break;
+                List<Vehicle> vehicles = new List<Vehicle>();
+                foreach (IJson i in profile.GetValue("vehicles"))
+                {
+                    Vehicle vehicle = new Vehicle(i);
+                    vehicles.Add(vehicle);
+                }
+                DataGridVehicles.ItemsSource = vehicles;
 
-                case Type.vehicles:
-                    WebLink = "vehicles";
-                    Regex1 = "<span class=\"name\" data-v-05d7549d data-v-65ae7756>";
-                    Regex2 = "<span class=\"sub\" data-v-05d7549d data-v-65ae7756>";
-                    b = 0;
-                    break;
+                BitmapImage bitmapImage = new BitmapImage();
+                bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.UriSource = new Uri(Regex.Unescape(profile.GetValue("account").GetValue("avatarUrl").ToString()));
+                bitmapImage.DecodePixelWidth = 320;
+                bitmapImage.EndInit();
+                Img.Source = bitmapImage;
             }
-            return true;
         }
 
-        private void GetImg()
+        private class Overview
         {
-            string Regex3 = "data-v-62b8b5d8><!----> <img src=\"";
-            string Regex4 = "\" data-v-62b8b5d8></a></div> <a href=\"";
-            string e1 = GetValue(EndRead, Regex3, Regex4);
-            BitmapImage bitmapImage = new BitmapImage();
-            bitmapImage = new BitmapImage();
-            bitmapImage.BeginInit();
-            bitmapImage.UriSource = new Uri(e1);
-            bitmapImage.DecodePixelWidth = 320;
-            bitmapImage.EndInit();
-            Img.Source = bitmapImage;
+            public string Name { get; set; }
+            public string LastPlayed { get; set; }
+            public string PlayedTime { get; set; }
+            public string ScoreMin { get; set; }
+            public string KD { get; set; }
+            public string Rank { get; set; }
+            public string WinP { get; set; }
+            public string Kill { get; set; }
+            public string KPM { get; set; }
+            public string Wins { get; set; }
+            public string Deaths { get; set; }
+            public string Assists { get; set; }
+            public string Damage { get; set; }
+            public string Heals { get; set; }
+            public string Revives { get; set; }
+            public string Resupplies { get; set; }
 
+            public Overview(IJson json)
+            {
+                Name = json.GetValue("account").GetValue("playerName").ToString();
+                LastPlayed = json.GetValue("stats").GetValue("lastUpdated").ToString();
+                PlayedTime = json.GetValue("stats").GetValue("timePlayed").GetValue("displayValue").ToString();
+                ScoreMin = json.GetValue("stats").GetValue("scorePerMinute").GetValue("displayValue").ToString();
+                KD = json.GetValue("stats").GetValue("kdRatio").GetValue("displayValue").ToString();
+                Rank = json.GetValue("stats").GetValue("rank").GetValue("displayValue").ToString();
+                WinP = json.GetValue("stats").GetValue("wlPercentage").GetValue("displayValue").ToString();
+                Kill = json.GetValue("stats").GetValue("kills").GetValue("displayValue").ToString();
+                KPM = json.GetValue("stats").GetValue("killsPerMinute").GetValue("displayValue").ToString();
+                Wins = json.GetValue("stats").GetValue("wins").GetValue("displayValue").ToString();
+                Deaths = json.GetValue("stats").GetValue("deaths").GetValue("displayValue").ToString();
+                Assists = json.GetValue("stats").GetValue("assists").GetValue("displayValue").ToString();
+                Damage = json.GetValue("stats").GetValue("damage").GetValue("displayValue").ToString();
+                Heals = json.GetValue("stats").GetValue("heals").GetValue("displayValue").ToString();
+                Revives = json.GetValue("stats").GetValue("revives").GetValue("displayValue").ToString();
+                Resupplies = json.GetValue("stats").GetValue("resupplies").GetValue("displayValue").ToString();
 
+                PlayedTime = PlayedTime.Replace("d", "天").Replace("h", "时").Replace("m", "分");
+                LastPlayed = DateTime.Parse(LastPlayed).ToLocalTime().ToString("F");
+            }
         }
 
-        private void GetInfo()
+        private class Class
         {
-           string a = "</h2> <div class=\"header-stats\" data-v-05d7549d data-v-332bc279><span class=\"playtime\" data-v-05d7549d data-v-332bc279>";
-           string b = "</span> <span class=\"last-played\" data-v-05d7549d data-v-332bc279";
-           string er= GetValue(EndRead, a, b);
-            a = "></path></svg>\n";
-            b = "Play Time";
-            er= GetValue(er, a, b);
-
-            //er = er.Replace("d","天");
-            //er = er.Replace("h", "小时");
-            //er = er.Replace("m", "分钟");
-            string[] day = er.Split('d');
-            string[] H = day[1].Split('h');
-            string[] M = H[1].Split('m');
-            double Time = double.Parse(day[0])*24+ double.Parse(H[0])+ double.Parse(M[0])/60;
+            public string ClassName { get; set; }
+            public string Rank { get; set; }
+            public string Score { get; set; }
+            public string ScoreMin { get; set; }
+            public string Kill { get; set; }
+            public string KPM { get; set; }
+            public string KD { get; set; }
 
 
-            PlayTime.Text= "["+Math.Round(Time,1) +"小时]";
-            a = "Last Played ";
-            b = "</span></div></header> <div class=\"main\"";
-            er = GetValue(EndRead, a, b);
-            er = er.Replace("/r", "");
-            LastPlayTime.Text ="["+ er.Trim()+"]";
-
+            public Class(IJson json)
+            {
+                ClassName = json.GetValue("class").ToString();
+                Rank = json.GetValue("rank").GetValue("displayValue").ToString();
+                Score = json.GetValue("score").GetValue("displayValue").ToString();
+                ScoreMin = json.GetValue("scorePerMinute").GetValue("displayValue").ToString();
+                Kill = json.GetValue("kills").GetValue("displayValue").ToString();
+                KPM = json.GetValue("killsPerMinute").GetValue("displayValue").ToString();
+                KD = json.GetValue("kdRatio").GetValue("displayValue").ToString();
+            }
 
         }
 
-
-
-        public static string GetValue(string str, string s, string e)
+        private class Weapon
         {
-            Regex rg = new Regex("(?<=(" + s + "))[.\\s\\S]*?(?=(" + e + "))", RegexOptions.Multiline | RegexOptions.Singleline);
-            return rg.Match(str).Value;
+            public string WeaponName { get; set; }
+            public string Kill { get; set; }
+            public string KPM { get; set; }
+            public string TimePlayed { get; set; }
+            public string ShotsFired { get; set; }
+            public string ShotsHit { get; set; }
+            public string ShotsAccuracy { get; set; }
+            public string Headshots { get; set; }
+
+            public Weapon(IJson json)
+            {
+                WeaponName = json.GetValue("code").ToString();
+                Kill = json.GetValue("kills").GetValue("displayValue").ToString();
+                KPM = json.GetValue("killsPerMinute").GetValue("displayValue").ToString();
+                TimePlayed = json.GetValue("timePlayed").GetValue("displayValue").ToString();
+                ShotsFired = json.GetValue("shotsFired").GetValue("displayValue").ToString();
+                ShotsHit = json.GetValue("shotsHit").GetValue("displayValue").ToString();
+                ShotsAccuracy = json.GetValue("ShotsAccuracy").GetValue("displayValue").ToString();
+                Headshots = json.GetValue("headshots").GetValue("displayValue").ToString();
+
+                TimePlayed = TimePlayed.Replace("h", "时").Replace("m", "分").Replace("s", "秒");
+            }
+
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private class Vehicle
         {
-            
+            public string VehicleName { get; set; }
+            public string Kill { get; set; }
+            public string KPM { get; set; }
+            public string TimePlayed { get; set; }
+            public string Destroyed { get; set; }
+
+            public Vehicle(IJson json)
+            {
+                VehicleName = json.GetValue("code").ToString();
+                Kill = json.GetValue("kills").GetValue("displayValue").ToString();
+                KPM = json.GetValue("killsPerMinute").GetValue("displayValue").ToString();
+                TimePlayed = json.GetValue("timePlayed").GetValue("displayValue").ToString();
+                Destroyed = json.GetValue("destroyed").GetValue("displayValue").ToString();
+
+                TimePlayed = TimePlayed.Replace("h", "时").Replace("m", "分").Replace("s", "秒");
+            }
 
         }
-
-        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
-
-        //public List<Data> GetValue(string str, string s1,string s2)
-        //{
-
-
-
-        //    foreach (Match a in rg1.Matches(str))
-        //    {
-
-        //        Data aa = new Data();
-        //        aa.Name=a.Value;
-        //        aa.Rank = rg2.Matches(str)[b].Value;
-        //        ls.Add(aa);
-        //        b++;
-
-        //    }
-
-        //    return ls;
-        //}
-
-
-    }
-
-    public class Data
-    {
-       public string Name { get; set; }
-       public string Rank { get; set; }
-    }
-
-    public class PlayerTotal
-    {
-        public String Score_min { get; set; }
-        public String KD { get; set; }
-        public String Rank { get; set; }
-        public String winP { get; set; }
-        public String Kill { get; set; }
-        public String KPM { get; set; }
-        public String Wins { get; set; }
-        public String Deaths { get; set; }
-        public String Assists { get; set; }
-        public String Damage { get; set; }
-        public String Heals { get; set; }
-        public String Revives { get; set; }
-        public String Resupplies { get; set; }
-
-        public PlayerTotal(List<string> A)
-        {
-            Score_min = A[0];
-            KD = A[1];
-            Rank = A[2];
-            winP = A[3];
-            Kill = A[6];
-            KPM = A[7];
-            Wins = A[9];
-            Deaths = A[10];
-            Assists = A[11];
-            Damage = A[12];
-            Heals = A[13];
-            Revives = A[14];
-            Resupplies = A[15];
-        }
-    }
-    public class Class
-    {
-        public string ClassName{get; set;}
-        public string Score { get; set; }
-        public string Score_min { get; set; }
-        public string KD { get; set; }
-        public string Rank { get; set; }
-
-        public string Kill { get; set; }
-        public string KPM { get; set; }
-
-
-        public Class(List<string> A,int i)
-        {
-            ClassName = A[i++];
-            Rank = A[i++];
-            Score = A[i++];
-            Score_min = A[i++];
-            Kill = A[i++];
-            KPM = A[i++];
-            KD = A[i++];
-        }
-
-    }
-    public class Weapons
-    {
-        public string WeaponName { get; set; }
-        public string Kill { get; set; }
-        public string KPM { get; set; }
-        public string TimePlayed{ get; set; }
-        public string ShotsFired { get; set; }
-        public string ShotsHit { get; set; }
-        public string ShotsAccuracy { get; set; }
-        public string Headshots { get; set; }
-
-
-
-
-        public Weapons(List<string> A, int i)
-        {
-            WeaponName = A[i++];
-            Kill = A[i++];
-            KPM = A[i++];
-            TimePlayed = A[i++];
-            ShotsFired = A[i++];
-            ShotsHit = A[i++];
-            ShotsAccuracy = A[i++];
-            Headshots  = A[i++];
-        }
-
     }
 }
