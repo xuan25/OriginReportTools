@@ -244,7 +244,7 @@
                         <TextBlock Text="快速举报" Margin="10,20,8,5" FontWeight="Bold" FontSize="20">
                         </TextBlock>
                     </TabItem.Header>
-                    <Grid >
+                    <Grid Background="#FFFFFFFF">
                         <Grid.RowDefinitions>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
@@ -313,7 +313,7 @@
                         <TextBlock Text="本地记录" Margin="10,20,8,5" FontWeight="Bold" FontSize="20">
                         </TextBlock>
                     </TabItem.Header>
-                    <Grid>
+                    <Grid Background="#FFFFFFFF">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
@@ -398,7 +398,7 @@
                         <TextBlock Text="设置" Margin="10,20,8,5" FontWeight="Bold" FontSize="20">
                         </TextBlock>
                     </TabItem.Header>
-                    <Grid>
+                    <Grid Background="#FFFFFFFF">
                         <WrapPanel>
                             <CheckBox>自动登陆</CheckBox>
                             <CheckBox>举报后立刻上传档案</CheckBox>
