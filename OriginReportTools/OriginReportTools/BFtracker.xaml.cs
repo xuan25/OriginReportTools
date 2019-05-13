@@ -247,5 +247,18 @@ namespace OriginReportTools
             }
 
         }
+
+        private void DataGrid_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (!e.Handled)
+            {
+                e.Handled = true;
+                var eventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta);
+                eventArg.RoutedEvent = MouseWheelEvent;
+                eventArg.Source = sender;
+                var parent = (UIElement)((Control)sender).Parent;
+                parent.RaiseEvent(eventArg);
+            }
+        }
     }
 }
