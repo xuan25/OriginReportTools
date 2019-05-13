@@ -69,7 +69,7 @@ namespace OriginReportTools
             }
             DataGridClasses.ItemsSource = classes;
 
-            List<IHasName> weapons = new List<IHasName>();
+            List<IHasCodeName> weapons = new List<IHasCodeName>();
             foreach (IJson i in json.GetValue("data").GetValue("weapons"))
             {
                 Weapon weapon = new Weapon(i);
@@ -77,7 +77,7 @@ namespace OriginReportTools
             }
             DataGridWeapons.ItemsSource = weapons;
 
-            List<IHasName> vehicles = new List<IHasName>();
+            List<IHasCodeName> vehicles = new List<IHasCodeName>();
             foreach (IJson i in json.GetValue("data").GetValue("vehicles"))
             {
                 Vehicle vehicle = new Vehicle(i);
@@ -85,24 +85,24 @@ namespace OriginReportTools
             }
             DataGridVehicles.ItemsSource = vehicles;
 
-            await CodeToNameAsync(weapons, "weapons");
+            await CodeToNameAsync(weapons);
             DataGridWeapons.Items.Refresh();
 
-            await CodeToNameAsync(vehicles, "vehicles");
+            await CodeToNameAsync(vehicles);
             DataGridVehicles.Items.Refresh();
         }
 
-        private async Task CodeToNameAsync(List<IHasName> hasNames, string id)
+        private async Task CodeToNameAsync(List<IHasCodeName> hasNames)
         {
-            IJson json = JsonParser.Parse(await RequestJsonAsync(string.Format("https://api.tracker.gg/api/v1/bfv/profile/origin/{0}/{1}", Name, id)));
+            IJson json = JsonParser.Parse(await RequestJsonAsync(string.Format("https://api.tracker.gg/api/v1/bfv/profile/origin/{0}/{1}", Name, hasNames[0].ID)));
 
             Dictionary<string, string> codeDic = new Dictionary<string, string>();
             foreach (IJson i in json.GetValue("data").GetValue("children"))
                 codeDic.Add(i.GetValue("id").ToString(), i.GetValue("metadata").GetValue("name").ToString());
 
-            foreach(IHasName i in hasNames)
+            foreach(IHasCodeName i in hasNames)
             {
-                i.Name = codeDic[id + "." + i.Name];
+                i.Name = codeDic[i.Code];
             }
             DataGridWeapons.Items.Refresh();
         }
@@ -162,12 +162,14 @@ namespace OriginReportTools
             }
         }
 
-        private interface IHasName
+        private interface IHasCodeName
         {
+            string ID { get; set; }
+            string Code { get; set; }
             string Name { get; set; }
         }
 
-        private class Class : IHasName
+        private class Class
         {
             public string Name { get; set; }
             public string Rank { get; set; }
@@ -176,7 +178,6 @@ namespace OriginReportTools
             public string Kill { get; set; }
             public string KPM { get; set; }
             public string KD { get; set; }
-
 
             public Class(IJson json)
             {
@@ -191,8 +192,10 @@ namespace OriginReportTools
 
         }
 
-        private class Weapon : IHasName
+        private class Weapon : IHasCodeName
         {
+            public string ID { get; set; }
+            public string Code { get; set; }
             public string Name { get; set; }
             public string Kill { get; set; }
             public string KPM { get; set; }
@@ -204,6 +207,8 @@ namespace OriginReportTools
 
             public Weapon(IJson json)
             {
+                ID = "weapons";
+                Code = ID + "." + json.GetValue("code").ToString();
                 Name = json.GetValue("code").ToString();
                 Kill = json.GetValue("kills").GetValue("displayValue").ToString();
                 KPM = json.GetValue("killsPerMinute").GetValue("displayValue").ToString();
@@ -218,8 +223,10 @@ namespace OriginReportTools
 
         }
 
-        private class Vehicle : IHasName
+        private class Vehicle : IHasCodeName
         {
+            public string ID { get; set; }
+            public string Code { get; set; }
             public string Name { get; set; }
             public string Kill { get; set; }
             public string KPM { get; set; }
@@ -228,6 +235,8 @@ namespace OriginReportTools
 
             public Vehicle(IJson json)
             {
+                ID = "vehicles";
+                Code = ID + "." + json.GetValue("code").ToString();
                 Name = json.GetValue("code").ToString();
                 Kill = json.GetValue("kills").GetValue("displayValue").ToString();
                 KPM = json.GetValue("killsPerMinute").GetValue("displayValue").ToString();
