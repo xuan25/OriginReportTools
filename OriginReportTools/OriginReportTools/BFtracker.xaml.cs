@@ -45,53 +45,77 @@ namespace OriginReportTools
 
         private async void ShowDataAsync()
         {
-            WebRequest request = WebRequest.Create(string.Format("https://battlefieldtracker.com/bfv/profile/origin/{0}", Name));
-            WebResponse response = await request.GetResponseAsync();
-            StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding("UTF-8"));
-            string result = reader.ReadToEnd();
-            Match jsonMatch = Regex.Match(result, "(?<=__INITIAL_STATE__=)(.+?)(?=;)");
-            if (jsonMatch.Success)
+            IJson json = JsonParser.Parse(await RequestJsonAsync(string.Format("https://api.tracker.gg/api/v1/bfv/profile/origin/{0}", Name)));
+
+            Overview overview = new Overview(json.GetValue("data"));
+            List<Overview> overviews = new List<Overview>(new Overview[] { overview });
+            DataGridOverview.ItemsSource = overviews;
+            PlayTime.Text = overview.PlayedTime;
+            LastPlayTime.Text = overview.LastPlayed;
+
+            BitmapImage bitmapImage = new BitmapImage();
+            bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
+            bitmapImage.UriSource = new Uri(Regex.Unescape(json.GetValue("data").GetValue("account").GetValue("avatarUrl").ToString()));
+            bitmapImage.DecodePixelWidth = 320;
+            bitmapImage.EndInit();
+            Img.Source = bitmapImage;
+
+            List<Class> classes = new List<Class>();
+            foreach (IJson i in json.GetValue("data").GetValue("classes"))
             {
-                IJson json = JsonParser.Parse(jsonMatch.Value);
-                IJson profile = json.GetValue("bfv\\u002fstats").GetValue("customPlayers").GetValue(string.Format("bfv|origin|{0}", Name));
+                Class @class = new Class(i);
+                classes.Add(@class);
+            }
+            DataGridClasses.ItemsSource = classes;
 
-                Overview overview = new Overview(profile);
-                List<Overview> overviews = new List<Overview>(new Overview[] { overview });
-                DataGridOverview.ItemsSource = overviews;
-                PlayTime.Text = overview.PlayedTime;
-                LastPlayTime.Text = overview.LastPlayed;
+            List<IHasName> weapons = new List<IHasName>();
+            foreach (IJson i in json.GetValue("data").GetValue("weapons"))
+            {
+                Weapon weapon = new Weapon(i);
+                weapons.Add(weapon);
+            }
+            DataGridWeapons.ItemsSource = weapons;
 
-                List<Class> classes = new List<Class>();
-                foreach(IJson i in profile.GetValue("classes"))
+            List<IHasName> vehicles = new List<IHasName>();
+            foreach (IJson i in json.GetValue("data").GetValue("vehicles"))
+            {
+                Vehicle vehicle = new Vehicle(i);
+                vehicles.Add(vehicle);
+            }
+            DataGridVehicles.ItemsSource = vehicles;
+
+            await CodeToNameAsync(weapons, "weapons");
+            DataGridWeapons.Items.Refresh();
+
+            await CodeToNameAsync(vehicles, "vehicles");
+            DataGridVehicles.Items.Refresh();
+        }
+
+        private async Task CodeToNameAsync(List<IHasName> hasNames, string id)
+        {
+            IJson json = JsonParser.Parse(await RequestJsonAsync(string.Format("https://api.tracker.gg/api/v1/bfv/profile/origin/{0}/{1}", Name, id)));
+
+            Dictionary<string, string> codeDic = new Dictionary<string, string>();
+            foreach (IJson i in json.GetValue("data").GetValue("children"))
+                codeDic.Add(i.GetValue("id").ToString(), i.GetValue("metadata").GetValue("name").ToString());
+
+            foreach(IHasName i in hasNames)
+            {
+                i.Name = codeDic[id + "." + i.Name];
+            }
+            DataGridWeapons.Items.Refresh();
+        }
+
+        private async Task<string> RequestJsonAsync(string url)
+        {
+            WebRequest request = WebRequest.Create(url);
+            using(WebResponse response = await request.GetResponseAsync())
+            {
+                using (StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding("UTF-8")))
                 {
-                    Class @class = new Class(i);
-                    classes.Add(@class);
+                    return reader.ReadToEnd();
                 }
-                DataGridClasses.ItemsSource = classes;
-
-                List<Weapon> weapons = new List<Weapon>();
-                foreach (IJson i in profile.GetValue("weapons"))
-                {
-                    Weapon weapon = new Weapon(i);
-                    weapons.Add(weapon);
-                }
-                DataGridWeapons.ItemsSource = weapons;
-
-                List<Vehicle> vehicles = new List<Vehicle>();
-                foreach (IJson i in profile.GetValue("vehicles"))
-                {
-                    Vehicle vehicle = new Vehicle(i);
-                    vehicles.Add(vehicle);
-                }
-                DataGridVehicles.ItemsSource = vehicles;
-
-                BitmapImage bitmapImage = new BitmapImage();
-                bitmapImage = new BitmapImage();
-                bitmapImage.BeginInit();
-                bitmapImage.UriSource = new Uri(Regex.Unescape(profile.GetValue("account").GetValue("avatarUrl").ToString()));
-                bitmapImage.DecodePixelWidth = 320;
-                bitmapImage.EndInit();
-                Img.Source = bitmapImage;
             }
         }
 
@@ -138,9 +162,14 @@ namespace OriginReportTools
             }
         }
 
-        private class Class
+        private interface IHasName
         {
-            public string ClassName { get; set; }
+            string Name { get; set; }
+        }
+
+        private class Class : IHasName
+        {
+            public string Name { get; set; }
             public string Rank { get; set; }
             public string Score { get; set; }
             public string ScoreMin { get; set; }
@@ -151,7 +180,7 @@ namespace OriginReportTools
 
             public Class(IJson json)
             {
-                ClassName = json.GetValue("class").ToString();
+                Name = json.GetValue("class").ToString();
                 Rank = json.GetValue("rank").GetValue("displayValue").ToString();
                 Score = json.GetValue("score").GetValue("displayValue").ToString();
                 ScoreMin = json.GetValue("scorePerMinute").GetValue("displayValue").ToString();
@@ -162,9 +191,9 @@ namespace OriginReportTools
 
         }
 
-        private class Weapon
+        private class Weapon : IHasName
         {
-            public string WeaponName { get; set; }
+            public string Name { get; set; }
             public string Kill { get; set; }
             public string KPM { get; set; }
             public string TimePlayed { get; set; }
@@ -175,7 +204,7 @@ namespace OriginReportTools
 
             public Weapon(IJson json)
             {
-                WeaponName = json.GetValue("code").ToString();
+                Name = json.GetValue("code").ToString();
                 Kill = json.GetValue("kills").GetValue("displayValue").ToString();
                 KPM = json.GetValue("killsPerMinute").GetValue("displayValue").ToString();
                 TimePlayed = json.GetValue("timePlayed").GetValue("displayValue").ToString();
@@ -189,9 +218,9 @@ namespace OriginReportTools
 
         }
 
-        private class Vehicle
+        private class Vehicle : IHasName
         {
-            public string VehicleName { get; set; }
+            public string Name { get; set; }
             public string Kill { get; set; }
             public string KPM { get; set; }
             public string TimePlayed { get; set; }
@@ -199,7 +228,7 @@ namespace OriginReportTools
 
             public Vehicle(IJson json)
             {
-                VehicleName = json.GetValue("code").ToString();
+                Name = json.GetValue("code").ToString();
                 Kill = json.GetValue("kills").GetValue("displayValue").ToString();
                 KPM = json.GetValue("killsPerMinute").GetValue("displayValue").ToString();
                 TimePlayed = json.GetValue("timePlayed").GetValue("displayValue").ToString();
