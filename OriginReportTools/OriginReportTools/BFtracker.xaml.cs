@@ -43,6 +43,9 @@ namespace OriginReportTools
 
             DataGridClass.AutoGenerateColumns = false;
             DataGridClass.CanUserAddRows = true;
+
+            DataGridWeapons.AutoGenerateColumns = false;
+            DataGridWeapons.CanUserAddRows = true;
             //Task<List<Data>> Weapon = GetData(Type.Weapons);
             //  Task<bool> wait = GetData(Type.Overview);
             GetData();
@@ -58,10 +61,6 @@ namespace OriginReportTools
             bool wait1 = await GetData(Type.Overview);
             bool wait2 = await GetData(Type.Class);
             bool wait3 = await GetData(Type.Weapons);
-
-
-
-
         }
 
 
@@ -124,9 +123,11 @@ namespace OriginReportTools
                     A.Clear();
                     B.Clear();
                     List<PlayerTotal> A1 = new List<PlayerTotal>();
+                    List<PlayerTotal> A2 = new List<PlayerTotal>();
                     foreach (Match a in rg1.Matches(EndRead))
                     {
                         A.Add(a.Value);
+                       
                     }
 
                     foreach (Match a in rg2.Matches(EndRead))
@@ -136,7 +137,8 @@ namespace OriginReportTools
                     b = 0;
                     A1.Add(new PlayerTotal(A));
                     A1.Add(new PlayerTotal(B));
-                    DataGrid.ItemsSource = A1;
+                    A2.Add(new PlayerTotal(A));
+                    DataGrid.ItemsSource = A2;
                     GetInfo();
                     GetImg();
                     break;
@@ -146,6 +148,7 @@ namespace OriginReportTools
                     A.Clear();
                     B.Clear();
                     List<Class> C1 = new List<Class>();
+                    List<Class> C2 = new List<Class>();
                     foreach (Match a in rg1.Matches(EndRead))
                     {
                         A.Add(a.Value);
@@ -158,7 +161,7 @@ namespace OriginReportTools
                     int cp = 0;
                     for (int i = 0; i < 6; i++)
                     {
-                        
+                        C2.Add(new Class(A, cp));
                         C1.Add(new Class(A, cp));
                         C1.Add(new Class(B, cp));
                         cp += 7;
@@ -168,10 +171,28 @@ namespace OriginReportTools
                     break;
 
                 case Type.Weapons:
-                    WebLink = "weapons";
-                    Regex1 = "<span class=\"name\" data-v-05d7549d data-v-ae988792>";
-                    Regex2 = "<span class=\"sub\" data-v-05d7549d data-v-ae988792>";
-                    b = 0;
+                    A.Clear();
+                    B.Clear();
+                    List<Weapons> W1 = new List<Weapons>();
+                    List<Weapons> W2 = new List<Weapons>();
+                    foreach (Match a in rg1.Matches(EndRead))
+                    {
+                        A.Add(a.Value);
+                    }
+                    foreach (Match a in rg2.Matches(EndRead))
+                    {
+                        B.Add(a.Value);
+                    }
+                    cp = 0;
+                    for (int i = 0; i <(A.Count)/8 ; i++)
+                    {
+                        W2.Add(new Weapons(A, cp));
+                        W1.Add(new Weapons(A, cp));
+                        W1.Add(new Weapons(B, cp));
+                        cp += 8;
+                    }
+                    DataGridWeapons.ItemsSource = W2;
+                   // DataGridWepons.ItemsSource = W1;
                     break;
 
                 case Type.vehicles:
@@ -329,6 +350,33 @@ namespace OriginReportTools
             Kill = A[i++];
             KPM = A[i++];
             KD = A[i++];
+        }
+
+    }
+    public class Weapons
+    {
+        public string WeaponName { get; set; }
+        public string Kill { get; set; }
+        public string KPM { get; set; }
+        public string TimePlayed{ get; set; }
+        public string ShotsFired { get; set; }
+        public string ShotsHit { get; set; }
+        public string ShotsAccuracy { get; set; }
+        public string Headshots { get; set; }
+
+
+
+
+        public Weapons(List<string> A, int i)
+        {
+            WeaponName = A[i++];
+            Kill = A[i++];
+            KPM = A[i++];
+            TimePlayed = A[i++];
+            ShotsFired = A[i++];
+            ShotsHit = A[i++];
+            ShotsAccuracy = A[i++];
+            Headshots  = A[i++];
         }
 
     }

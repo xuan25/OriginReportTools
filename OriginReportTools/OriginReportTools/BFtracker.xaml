@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OriginReportTools"
         mc:Ignorable="d"
-        Title="战绩分析工具" Height="504.249" Width="901.324">
+        Title="战绩分析工具" Height="504.249" Width="970.324">
     <Grid ShowGridLines="True">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
-            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Column="0" Grid.Row="0">
@@ -22,7 +22,7 @@
         </StackPanel>
         <ScrollViewer x:Name="scrolls" Grid.Column="1" Grid.Row="0" Grid.RowSpan="1" VerticalAlignment="Top" >
             <ScrollViewer.Content>
-                <StackPanel Margin="17" >
+                <StackPanel Margin="17" HorizontalAlignment="Left" VerticalAlignment="Top" >
 
                     <TextBlock>总览</TextBlock>
                     <DataGrid  x:Name="DataGrid" SelectionChanged="DataGrid_SelectionChanged" HeadersVisibility="Column" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -58,17 +58,33 @@
                         </DataGrid.Columns>
 
                     </DataGrid>
-                    <TextBlock>武器概览</TextBlock>
+                    <TextBlock>武器总览</TextBlock>
                     <DataGrid x:Name="DataGridWeapons" SelectionChanged="DataGrid_SelectionChanged" HeadersVisibility="Column" HorizontalAlignment="Left" VerticalAlignment="Top">
                         <DataGrid.Columns>
 
-                            <DataGridTextColumn Binding="{Binding ClassName,Mode=OneWay}"  Header="兵种" CanUserSort="False"/>
-                            <DataGridTextColumn Binding="{Binding Rank,Mode=OneWay}" Header="等级" CanUserSort="False"/>
-                            <DataGridTextColumn Binding="{Binding Score,Mode=OneWay}"  Header="得分" CanUserSort="False"/>
-                            <DataGridTextColumn Binding="{Binding Score_min,Mode=OneWay}"  Header="得分/每分钟" CanUserSort="False"/>
+                            <DataGridTextColumn Binding="{Binding WeaponName,Mode=OneWay}"  Header="武器名称" CanUserSort="False"/>
                             <DataGridTextColumn Binding="{Binding Kill,Mode=OneWay}" Header="杀敌" CanUserSort="False"/>
                             <DataGridTextColumn Binding="{Binding KPM,Mode=OneWay}" Header="杀敌/每分钟" CanUserSort="False"/>
-                            <DataGridTextColumn Binding="{Binding KD,Mode=OneWay}" Header="KD" CanUserSort="False"/>
+                            <DataGridTextColumn Binding="{Binding TimePlayed,Mode=OneWay}" Header="使用时间" CanUserSort="False"/>
+                            <DataGridTextColumn Binding="{Binding ShotsFired,Mode=OneWay}"  Header="开火次数" CanUserSort="False"/>
+                            <DataGridTextColumn Binding="{Binding ShotsHit,Mode=OneWay}"  Header="命中次数" CanUserSort="False"/>
+                            <DataGridTextColumn Binding="{Binding ShotsAccuracy,Mode=OneWay}" Header="命中率" CanUserSort="False"/>
+                            <DataGridTextColumn Binding="{Binding Headshots,Mode=OneWay}" Header="爆头次数" CanUserSort="False"/>
+
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+                    <TextBlock>载具总览</TextBlock>
+                    <DataGrid x:Name="DataGridTransports" SelectionChanged="DataGrid_SelectionChanged" HeadersVisibility="Column" HorizontalAlignment="Left" VerticalAlignment="Top">
+                        <DataGrid.Columns>
+
+                            <DataGridTextColumn Binding="{Binding ClassName,Mode=OneWay}"  Header="载具名称" CanUserSort="False"/>
+                            <DataGridTextColumn Binding="{Binding Kill,Mode=OneWay}" Header="杀敌" CanUserSort="False"/>
+                            <DataGridTextColumn Binding="{Binding KPM,Mode=OneWay}" Header="杀敌/每分钟" CanUserSort="False"/>
+                            <DataGridTextColumn Binding="{Binding Rank,Mode=OneWay}" Header="使用时间" CanUserSort="False"/>
+                            <DataGridTextColumn Binding="{Binding Score,Mode=OneWay}"  Header="开火次数" CanUserSort="False"/>
+                            <DataGridTextColumn Binding="{Binding Score_min,Mode=OneWay}"  Header="摧毁" CanUserSort="False"/>
+
 
                         </DataGrid.Columns>
 
