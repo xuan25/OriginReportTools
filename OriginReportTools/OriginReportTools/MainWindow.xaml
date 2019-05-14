@@ -472,6 +472,9 @@
                     <CheckBox x:Name="StatementConfirmChk" Margin="10" Content="我已认真阅读以上声明" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center" FocusVisualStyle="{x:Null}"  Checked="StatementConfirmChk_Checked"/>
                 </Grid>
             </Grid>
+            <Grid x:Name="UpdatePromptGrid" Visibility="{Binding ElementName=UpdatePromptBox, Path=Visibility}" Background="#88000000">
+                <local:UpdatePrompt x:Name="UpdatePromptBox" Visibility="Hidden" Grid.Column="1" Grid.Row="1" Confirmed="UpdatePromptBox_Confirmed" />
+            </Grid>
         </Grid>
     </Grid>
 </Window>

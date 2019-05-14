@@ -218,7 +218,7 @@ namespace OriginReportTools
                 ShotsAccuracy = json.GetValue("ShotsAccuracy").GetValue("displayValue").ToString();
                 Headshots = json.GetValue("headshots").GetValue("displayValue").ToString();
 
-                TimePlayed = TimePlayed.Replace("h", "时").Replace("m", "分").Replace("s", "秒");
+                TimePlayed = TimePlayed.Replace("h", "时").Replace("m", "分").Replace("s", "秒").Replace("d", "天");
             }
 
         }
@@ -243,7 +243,7 @@ namespace OriginReportTools
                 TimePlayed = json.GetValue("timePlayed").GetValue("displayValue").ToString();
                 Destroyed = json.GetValue("destroyed").GetValue("displayValue").ToString();
 
-                TimePlayed = TimePlayed.Replace("h", "时").Replace("m", "分").Replace("s", "秒");
+                TimePlayed = TimePlayed.Replace("h", "时").Replace("m", "分").Replace("s", "秒").Replace("d", "天");
             }
 
         }

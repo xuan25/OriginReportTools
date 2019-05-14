@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Xml;
 
@@ -157,7 +158,6 @@ namespace OriginReportTools
         /// </summary>
         /// <param name="GameName"></param>
         /// <returns></returns>
-
         public bool NameGetID(string GameName)
         {
             try
@@ -167,7 +167,7 @@ namespace OriginReportTools
                 var client = new HttpClient(handler);
                 var message = new HttpRequestMessage(HttpMethod.Get, url);
                 message.Headers.Add("authtoken", Token);
-                var result = client.SendAsync(message);
+                var result =  client.SendAsync(message);
                 var rep = result.Result.Content.ReadAsStringAsync();
                 string a = rep.Result;
                 string[] s1 = a.Split('"');

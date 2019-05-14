@@ -4,8 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OriginReportTools"
-             mc:Ignorable="d" Height="160.983" Width="427.197">
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="300" Height="100" Width="300">
     <Grid x:Name="PromptGrid" Background="White">
+
+
         <Grid.Effect>
             <DropShadowEffect Color="#000000" ShadowDepth="2" BlurRadius="4" Direction="-90" Opacity="0.16"/>
         </Grid.Effect>
@@ -38,7 +41,7 @@
                                     <DrawingBrush.Drawing>
                                         <GeometryDrawing Brush="#FF000000">
                                             <GeometryDrawing.Geometry>
-                                                <RectangleGeometry Rect="0,0,70,26" RadiusX="13" RadiusY="13"/>
+                                                <RectangleGeometry Rect="0,0,70,26" RadiusX="0" RadiusY="0"/>
                                             </GeometryDrawing.Geometry>
                                         </GeometryDrawing>
                                     </DrawingBrush.Drawing>
@@ -65,7 +68,7 @@
             <Button x:Name="NowBtn" Grid.Column="2" Margin="5,0" Content="立即更新" Width="70" FontSize="14" Click="NowBtn_Click">
                 <Button.Style>
                     <Style TargetType="Button">
-                        <Setter Property="Background" Value="#FF00a1d6"/>
+                        <Setter Property="Background" Value="#FFFF9A45"/>
                         <Setter Property="Foreground" Value="White"/>
                         <Setter Property="Height" Value="26"/>
                         <Setter Property="Width" Value="70"/>
@@ -77,7 +80,7 @@
                                     <DrawingBrush.Drawing>
                                         <GeometryDrawing Brush="#FF000000">
                                             <GeometryDrawing.Geometry>
-                                                <RectangleGeometry Rect="0,0,70,26" RadiusX="13" RadiusY="13"/>
+                                                <RectangleGeometry Rect="0,0,70,26" RadiusX="0" RadiusY="0"/>
                                             </GeometryDrawing.Geometry>
                                         </GeometryDrawing>
                                     </DrawingBrush.Drawing>
