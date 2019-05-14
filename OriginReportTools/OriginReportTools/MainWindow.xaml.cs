@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -37,14 +36,13 @@ namespace OriginReportTools
         /// 作弊选项
         /// </summary>
         List<string> CheckTypesList=new List<string>();
-
         public MainWindow()
         {
             InitializeComponent();
 
             LoadChEnData();
             HackDateListLoad();
-            DataGrid.Items.Refresh();
+            dataBinding();
            
             //MainButton = chendata.BF1;
             //chendata.SerializableSave(chendata);
@@ -59,98 +57,92 @@ namespace OriginReportTools
             LoadStatus();
            //BFtracker bFtracker = new BFtracker(HackName.Text);
         }
-
-
-
-        #region 控件管理
         /// <summary>
-        /// 生成的作弊选项框被选中时执行的操作
+        /// 反序列化翻译数据文件
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Checked(object sender, RoutedEventArgs e)
+        /// <returns>返回序列化的成功与否</returns>
+        private bool LoadChEnData()
         {
-
-            CheckTypesList.Add(((CheckBox)sender).Content.ToString());
-
-        }
-        /// <summary>
-        /// 生成的作弊选项框被取消选中时执行的操作
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Unchecked(object sender, RoutedEventArgs e)
-        {
-            CheckTypesList.Remove(((CheckBox)sender).Content.ToString());
-
-        }
-        /// <summary>
-        /// 兵种列表下拉选项关闭时执行的操作
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void GameClass_DropDownClosed(object sender, EventArgs e)
-        {
-            //foreach(MainButton.Class.)
-        }
-        /// <summary>
-        /// HackName里按下Tab或Enter时触发该方法
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void HackName_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            if (e.Key == System.Windows.Input.Key.Enter)
+            string path = Environment.CurrentDirectory + "\\ChEnData.dat";
+            if (!File.Exists(path))
             {
-                IDCheck();
-                Clipboard.SetText(eahttp.HackerEAID);
-
+                return false;
             }
-            if (e.Key == System.Windows.Input.Key.Tab)
+            try
             {
+                Stream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+                BinaryFormatter binaryFormatter = new BinaryFormatter();
+                CHENDATA = (GamesDataSet)binaryFormatter.Deserialize(stream);
+                stream.Close();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        private void LoginWindow_LoggedIn(string token)
+        {
+            
+            Dispatcher.Invoke(new Action(() =>
+            {
+                LoginText.Text = "登陆成功";
+                Report_tex.Text = "举报至EA";
                 try
                 {
-                    HackName.Text = eahttp.IDGetName(HackName.Text);
+                    string[] A = token.Split('"');
+                    eahttp.Token = A[3];
+                    LoginText.Text = "注销";
+                    eahttp.GetMe();
+                    PlayerName.Text = eahttp.PlayerName;
+                    Email.Text = eahttp.Email;
+                    IMG.Source = eahttp.bitmapImage;
                 }
                 catch
                 {
+                    LoginText.Text = "登陆";
+                    loginWindows.Logout();
+                    PlayerName.Text = "登陆失败";
+                    IMG.Source = null;
                 }
-            }
+
+            }));
         }
-        /// <summary>
-        /// 武器种类列表下拉选项打开时执行的操作
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void WeaponClass_DropDownOpened(object sender, EventArgs e)
+        private void LoginWindow_Loggeding1()
         {
-            WeaponClass.Items.Clear();
-            foreach (KeyValuePair<string, GamesDataSet.Game.Arm.EquipmentSet> WPC in CHENDATA.Games[GameName].Arms[GameClass.Text].EquipmentSets)
+            Dispatcher.Invoke(new Action(() =>
             {
-                WeaponClass.Items.Add(WPC.Key);
-            }
+                PlayerName.Text = "检测到已登陆过...正在跳转";
+
+            }));
         }
-
-
-
-        /// <summary>
-        /// 武器列表下拉选中打开时执行的操作
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void WeaponList_DropDownOpened(object sender, EventArgs e)
+        private void LoginWindow_Loggeding2()
         {
-            WeaponList.Items.Clear();
-            foreach (KeyValuePair<string, GamesDataSet.Game.Arm.EquipmentSet.Equipment> WPL in CHENDATA.Games[GameName].Arms[GameClass.Text].EquipmentSets[WeaponClass.Text].Equipments)
+            Dispatcher.Invoke(new Action(() =>
             {
-                WeaponList.Items.Add(WPL.Key);
-            }
+                PlayerName.Text = "未检测到登陆用户...";
+
+            }));
         }
 
+        private void LoginWindow_LoggedOut()
+        {
+            Dispatcher.Invoke(new Action(() =>
+            {
+                LoginText.Text = "Logged out";
+                PlayerName.Text = "登陆操操作已被取消";
+            }));
+        }
 
-        #endregion
-
-        #region 按钮点击事件
+        private void LoginWindow_LoginCanceled()
+        {
+            Dispatcher.Invoke(new Action(() =>
+            {
+                LoginText.Text = "重新登陆";
+            }));
+        }
         /// <summary>
         /// 登陆按钮被点击时
         /// </summary>
@@ -158,7 +150,7 @@ namespace OriginReportTools
         /// <param name="e"></param>
         private void LoginBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (LoginText.Text == "登陆" | LoginText.Text == "重新登陆")
+            if (LoginText.Text == "登陆"| LoginText.Text == "重新登陆")
             {
                 LoginText.Text = "载入中";
                 PlayerName.Text = "请耐心等待";
@@ -173,6 +165,18 @@ namespace OriginReportTools
                 IMG.Source = null;
 
             }
+        }
+        /// <summary>
+        /// 主窗口关闭时触发该事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            loginWindows.Close();
+            SaveStatus();
+
+
         }
         /// <summary>
         /// BF1按钮被点击
@@ -217,17 +221,11 @@ namespace OriginReportTools
             LoadCheckBox(CHENDATA.Games["APEX"]);
             CheckTypesList.Clear();
         }
-
-        #endregion
-
-
-        #region 方法
-
-
         /// <summary>
         /// 动态的从反序列化后的数据中载入游戏对应的作弊选项框
         /// </summary>
         /// <param name="Name">游戏的名字</param>
+
         private void LoadCheckBox(GamesDataSet.Game Name)
         {
             CheckList.Children.Clear();
@@ -236,24 +234,286 @@ namespace OriginReportTools
                 CheckBox cb = new CheckBox();
                 cb.Content = check.Key;
                 cb.Tag = check.Value;
-                cb.Margin = new Thickness(0, 0, 10f, 0);
+                cb.Margin = new Thickness(0,0,10f,0);
                 cb.AddHandler(CheckBox.CheckedEvent, new RoutedEventHandler(Checked));
                 cb.AddHandler(CheckBox.UncheckedEvent, new RoutedEventHandler(Unchecked));
                 CheckList.Children.Add(cb);
+
             }
+
             GameClass.Items.Clear();
             GameMap.Items.Clear();
+
             foreach (KeyValuePair<string, GamesDataSet.Game.Arm> arm in Name.Arms)
             {
                 GameClass.Items.Add(arm.Key);
             }
+
+
             foreach (KeyValuePair<string, GamesDataSet.Game.Map> map in Name.Maps)
             {
                 GameMap.Items.Add(map.Key);
             }
         }
+        /// <summary>
+        /// 生成的作弊选项框被选中时执行的操作
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Checked(object sender, RoutedEventArgs e)
+        {
+
+            CheckTypesList.Add(((CheckBox)sender).Content.ToString());
+
+       }
+        /// <summary>
+        /// 生成的作弊选项框被取消选中时执行的操作
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Unchecked(object sender, RoutedEventArgs e)
+        {
+            CheckTypesList.Remove(((CheckBox)sender).Content.ToString());
+           
+        }
 
 
+
+
+        /// <summary>
+        /// 兵种列表下拉选项关闭时执行的操作
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GameClass_DropDownClosed(object sender, EventArgs e)
+        {
+            //foreach(MainButton.Class.)
+        }
+
+
+
+
+        /// <summary>
+        /// 武器种类列表下拉选项打开时执行的操作
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void WeaponClass_DropDownOpened(object sender, EventArgs e)
+        {
+            WeaponClass.Items.Clear();
+            foreach (KeyValuePair<string, GamesDataSet.Game.Arm.EquipmentSet>  WPC in CHENDATA.Games[GameName].Arms[GameClass.Text].EquipmentSets)
+            {
+               WeaponClass.Items.Add(WPC.Key);
+            }
+        }
+
+
+
+        /// <summary>
+        /// 武器列表下拉选中打开时执行的操作
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void WeaponList_DropDownOpened(object sender, EventArgs e)
+        {
+            WeaponList.Items.Clear();
+            foreach (KeyValuePair<string, GamesDataSet.Game.Arm.EquipmentSet.Equipment> WPL in CHENDATA.Games[GameName].Arms[GameClass.Text].EquipmentSets[WeaponClass.Text].Equipments)
+            {
+                WeaponList.Items.Add(WPL.Key);
+            }
+        }
+
+        /// <summary>
+        /// 举报至EA按钮被点击时
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Report_But_Click(object sender, RoutedEventArgs e)
+        {
+            TextProcessing a = new TextProcessing();
+            if (HackName.Text == "")
+                return;
+            if (((TextBlock)((Button)sender).Content).Text == "生成并复制举报文本")
+            {
+                
+
+                List<string> EnCheckTypesList = new List<string>();
+                foreach (string aaa in CheckTypesList)
+                {
+                    EnCheckTypesList.Add(CHENDATA.Games[GameName].CheckTypes[aaa].Name);
+                }
+                string EnGame = CHENDATA.Games[GameName].Name;
+                string EnWeaponList = CHENDATA.Games[GameName].Arms[GameClass.Text].EquipmentSets[WeaponClass.Text].Equipments[WeaponList.Text].Name;
+                string EnClass = CHENDATA.Games[GameName].Arms[GameClass.Text].Name;
+                string EnMap = CHENDATA.Games[GameName].Maps[GameMap.Text].Name;
+
+                Clipboard.SetText(a.AllToComment(EnGame, EnCheckTypesList, EnClass, EnWeaponList, EnMap, K.Text, D.Text));
+                HackData Hdata = new HackData();
+                Hdata.Key = HackDataList.Count + 1;
+                Hdata.NameList.Add(HackName.Text);
+                Hdata.HackEAID = null;
+                Hdata.HackCheckType = CheckTypesList;
+                Hdata.Game = GameName;
+                Hdata.Class = GameClass.Text;
+                Hdata.Map = GameMap.Text;
+                Hdata.K = K.Text;
+                Hdata.D = D.Text;
+                Hdata.PlayerName = "未登陆账户";
+                Hdata.PlayerEAID = null;
+                Hdata.ReportTime = eahttp.GetNetDateTime();
+                Hdata.SaveInfo = "离线档案";
+                Hdata.IsUpToServer = "未上传";
+                Hdata.IsBan = "未检测";
+                HackDataList.Add(Hdata);
+                HackDateListSave(HackDataList);
+                dataBinding();
+                MessageBox.Show("文本已经复制到粘贴板");
+            }
+            else
+            {
+                
+                if (!IDCheck())
+                    return;
+                HackData Hdata = new HackData();
+                Hdata.Key = HackDataList.Count + 1;
+                Hdata.NameList.Add(HackName.Text);
+                Hdata.HackEAID = eahttp.HackerEAID;
+                Hdata.HackCheckType = CheckTypesList;
+                Hdata.Game = GameName;
+                Hdata.Class = GameClass.Text;
+                Hdata.Map = GameMap.Text;
+                Hdata.K = K.Text;
+                Hdata.D = D.Text;
+                Hdata.PlayerName = eahttp.PlayerName;
+                Hdata.PlayerEAID = eahttp.PlayerEAID;
+                Hdata.ReportTime = eahttp.GetNetDateTime();
+                Hdata.SaveInfo = "在线档案";
+                Hdata.IsUpToServer = "未上传";
+                Hdata.IsBan = "未检测";
+                HackDataList.Add(Hdata);
+                HackDateListSave(HackDataList);
+                dataBinding();
+                List<string> EnCheckTypesList = new List<string>();
+                foreach (string aaa in CheckTypesList)
+                {
+                    EnCheckTypesList.Add(CHENDATA.Games[GameName].CheckTypes[aaa].Name);
+                }
+                string EnGame = CHENDATA.Games[GameName].Name;
+                string EnWeaponList = CHENDATA.Games[GameName].Arms[GameClass.Text].EquipmentSets[WeaponClass.Text].Equipments[WeaponList.Text].Name;
+                string EnClass = CHENDATA.Games[GameName].Arms[GameClass.Text].Name;
+                string EnMap = CHENDATA.Games[GameName].Maps[GameMap.Text].Name;
+
+                bool end = eahttp.ReportCheat(a.AllToComment(EnGame, EnCheckTypesList, EnClass, EnWeaponList, EnMap, K.Text, D.Text));
+                if (end)
+                {
+                    MessageBox.Show("举报成功！");
+                }
+                else
+                {
+                    MessageBox.Show("举报失败！");
+                }
+
+
+                
+            }
+        }
+        /// <summary>
+        /// 检查HackName输入框的内容，并返回一个布尔值告知ID是否存在
+        /// </summary>
+        /// <returns>返回True是ID存在，反之不存在</returns>
+        public bool IDCheck()
+        {
+            bool a = eahttp.NameGetID(HackName.Text);
+            if (a == true & eahttp.HackerEAID != "failure")
+            {
+                A.Text = "该玩家存在";
+                A.Foreground = Brushes.Green;
+            }
+            else if (a == true & eahttp.HackerEAID == "failure")
+            {
+                A.Text = "未登陆，无法验证玩家是否存在";
+                A.Foreground = Brushes.Gray;
+            }
+            else if (a == false & eahttp.HackerEAID == null)
+            {
+                A.Text = "该玩家不存在";
+                A.Foreground = Brushes.Red;
+            }
+            return a;
+        }
+        /// <summary>
+        /// HackName里按下Tab或Enter时触发该方法
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void HackName_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                IDCheck();
+                    
+                Clipboard.SetText(eahttp.HackerEAID);
+                
+            }
+            if (e.Key == System.Windows.Input.Key.Tab)
+            {
+                try
+                {
+
+                    HackName.Text = eahttp.IDGetName(HackName.Text);
+                }
+                catch
+                {
+
+                }
+               
+            }
+        }
+
+        private void Button_CheckName(object sender, RoutedEventArgs e)
+        {
+            if (IsLoaded)
+            {
+                foreach (HackData Data in HackDataList)
+                {
+                    if (Data.HackEAID == null)
+                    {
+
+                    }
+                   string newName =  eahttp.IDGetName(Data.HackEAID);
+                    if (newName != Data.NameList[Data.NameList.Count-1])
+                    {
+                        Data.NameList.Add(newName);
+                    }
+
+                }
+
+            }
+        }
+
+
+        public void dataBinding()
+        {
+            DataGrid.ItemsSource = null;
+            DataGrid.ItemsSource = HackDataList;
+            DataGrid.AutoGenerateColumns = false;//禁止自动添加列
+            DataGrid.CanUserAddRows = true;//禁止自动添加行
+
+           // PlayerName.Text = ps1.ReportTime.ToLocalTime().ToString();时间转换
+           // DateTime c =  DateTime.Parse(PlayerName.Text);
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            TextProcessing a = new TextProcessing();
+            string c = a.ToString(CheckTypesList);
+            List<string> aa = a.ToList(c);
+        }
+        [Serializable]
+        class Status
+        {
+            public bool IsLoggedIn;
+        }
         public void SaveStatus()
         {
             Status status = new Status()
@@ -318,48 +578,7 @@ namespace OriginReportTools
                 return false;
             }
         }
-        /// <summary>
-        /// 检查HackName输入框的内容，并返回一个布尔值告知ID是否存在
-        /// </summary>
-        /// <returns>返回True是ID存在，反之不存在</returns>
-        public bool IDCheck()
-        {
-            bool a =eahttp.NameGetID(HackName.Text);
-            if (a == true & eahttp.HackerEAID != "failure")
-            {
-                A.Text = "该玩家存在";
-                A.Foreground = Brushes.Green;
-            }
-            else if (a == true & eahttp.HackerEAID == "failure")
-            {
-                A.Text = "未登陆，无法验证玩家是否存在";
-                A.Foreground = Brushes.Gray;
-            }
-            else if (a == false & eahttp.HackerEAID == null)
-            {
-                A.Text = "该玩家不存在";
-                A.Foreground = Brushes.Red;
-            }
-            return a;
-        }
 
-        /// <summary>
-        /// 对本地表格进行数据绑定
-        /// </summary>
-        //public void dataBinding()
-        //{
-        //    DataGrid.ItemsSource = null;
-        //    DataGrid.ItemsSource = HackDataList;
-        //    DataGrid.AutoGenerateColumns = false;//禁止自动添加列
-        //    DataGrid.CanUserAddRows = true;//禁止自动添加行
-        //}
-
-
-
-        /// <summary>
-        /// 将作弊者列表内数据序列化存储
-        /// </summary>
-        /// <param name="hackDatasList"></param>
         public void HackDateListSave(List<HackData> hackDatasList)
         {
             string fileDirectory = Environment.CurrentDirectory + "\\";
@@ -368,14 +587,9 @@ namespace OriginReportTools
             string fileName = "HackData.dat";
             Stream stream = new FileStream(fileDirectory + fileName, FileMode.Create, FileAccess.ReadWrite);
             BinaryFormatter binaryFormatter = new BinaryFormatter();
-            binaryFormatter.Serialize(stream, hackDatasList);
+            binaryFormatter.Serialize(stream,hackDatasList);
             stream.Close();
         }
-
-        /// <summary>
-        /// 将作弊者列表从文件中反序列化读取
-        /// </summary>
-        /// <returns></returns>
         public bool HackDateListLoad()
         {
             string path = Environment.CurrentDirectory + "\\HackData.dat";
@@ -397,263 +611,6 @@ namespace OriginReportTools
             }
         }
 
-
-        #endregion
-
-        /// <summary>
-        /// 反序列化翻译数据文件
-        /// </summary>
-        /// <returns>返回序列化的成功与否</returns>
-        private bool LoadChEnData()
-        {
-            string path = Environment.CurrentDirectory + "\\ChEnData.dat";
-            if (!File.Exists(path))
-            {
-                return false;
-            }
-            try
-            {
-                Stream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
-                BinaryFormatter binaryFormatter = new BinaryFormatter();
-                CHENDATA = (GamesDataSet)binaryFormatter.Deserialize(stream);
-                stream.Close();
-
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
-
-        private void LoginWindow_LoggedIn(string token)
-        {
-            
-            Dispatcher.Invoke(new Action(() =>
-            {
-                LoginText.Text = "登陆成功";
-                Report_tex.Text = "举报至EA";
-                try
-                {
-                    string[] A = token.Split('"');
-                    eahttp.Token = A[3];
-                    LoginText.Text = "注销";
-                    eahttp.GetMe();
-                    PlayerName.Text = eahttp.PlayerName;
-                    Email.Text = eahttp.Email;
-                    IMG.Source = eahttp.bitmapImage;
-                }
-                catch
-                {
-                    LoginText.Text = "登陆";
-                    loginWindows.Logout();
-                    PlayerName.Text = "登陆失败";
-                    IMG.Source = null;
-                }
-
-            }));
-        }
-        private void LoginWindow_Loggeding1()
-        {
-            Dispatcher.Invoke(new Action(() =>
-            {
-                PlayerName.Text = "检测到已登陆过...正在跳转";
-
-            }));
-        }
-        private void LoginWindow_Loggeding2()
-        {
-            Dispatcher.Invoke(new Action(() =>
-            {
-                PlayerName.Text = "未检测到登陆用户...";
-
-            }));
-        }
-
-        private void LoginWindow_LoggedOut()
-        {
-            Dispatcher.Invoke(new Action(() =>
-            {
-                LoginText.Text = "Logged out";
-                PlayerName.Text = "登陆操操作已被取消";
-            }));
-        }
-
-        private void LoginWindow_LoginCanceled()
-        {
-            Dispatcher.Invoke(new Action(() =>
-            {
-                LoginText.Text = "重新登陆";
-            }));
-        }
- 
-        /// <summary>
-        /// 主窗口关闭时触发该事件
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            loginWindows.Close();
-            SaveStatus();
-
-
-        }
-
-
-        /// <summary>
-        /// 软件状态序列化和反序列化用的数据类
-        /// </summary>
-        [Serializable]
-        class Status
-        {
-            public bool IsLoggedIn;
-        }
-
-
-
-        private void UpdatePromptBox_Confirmed(bool IsUpdate)
-        {
-            if (IsUpdate)
-                this.Close();
-        }
-
-
-
-
-
-        #region 按钮点击事件
-        /// <summary>
-        /// 文本生成/举报至EA按钮
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Report_But_Click(object sender, RoutedEventArgs e)
-        {
-            TextProcessing a = new TextProcessing();
-            if (HackName.Text == "")
-                return;
-            if (((TextBlock)((Button)sender).Content).Text == "生成并复制举报文本")
-            {
-
-
-                List<string> EnCheckTypesList = new List<string>();
-                foreach (string aaa in CheckTypesList)
-                {
-                    EnCheckTypesList.Add(CHENDATA.Games[GameName].CheckTypes[aaa].Name);
-                }
-                string EnGame = CHENDATA.Games[GameName].Name;
-                string EnWeaponList = CHENDATA.Games[GameName].Arms[GameClass.Text].EquipmentSets[WeaponClass.Text].Equipments[WeaponList.Text].Name;
-                string EnClass = CHENDATA.Games[GameName].Arms[GameClass.Text].Name;
-                string EnMap = CHENDATA.Games[GameName].Maps[GameMap.Text].Name;
-
-                Clipboard.SetText(a.AllToComment(EnGame, EnCheckTypesList, EnClass, EnWeaponList, EnMap, K.Text, D.Text));
-                HackData Hdata = new HackData();
-                Hdata.Key = HackDataList.Count + 1;
-                Hdata.NameList.Add(HackName.Text);
-                Hdata.HackEAID = null;
-                Hdata.HackCheckType = CheckTypesList;
-                Hdata.Game = GameName;
-                Hdata.Class = GameClass.Text;
-                Hdata.Map = GameMap.Text;
-                Hdata.K = K.Text;
-                Hdata.D = D.Text;
-                Hdata.PlayerName = "未登陆账户";
-                Hdata.PlayerEAID = null;
-                Hdata.ReportTime = eahttp.GetNetDateTime();
-                Hdata.SaveInfo = "离线档案";
-                Hdata.IsUpToServer = "未上传";
-                Hdata.IsBan = "未检测";
-                HackDataList.Add(Hdata);
-                HackDateListSave(HackDataList);
-                DataGrid.Items.Refresh();
-                MessageBox.Show("文本已经复制到粘贴板");
-            }
-            else
-            {
-
-                if (!IDCheck())
-                    return;
-                HackData Hdata = new HackData();
-                Hdata.Key = HackDataList.Count + 1;
-                Hdata.NameList.Add(HackName.Text);
-                Hdata.HackEAID = eahttp.HackerEAID;
-                Hdata.HackCheckType = CheckTypesList;
-                Hdata.Game = GameName;
-                Hdata.Class = GameClass.Text;
-                Hdata.Map = GameMap.Text;
-                Hdata.K = K.Text;
-                Hdata.D = D.Text;
-                Hdata.PlayerName = eahttp.PlayerName;
-                Hdata.PlayerEAID = eahttp.PlayerEAID;
-                Hdata.ReportTime = eahttp.GetNetDateTime();
-                Hdata.SaveInfo = "在线档案";
-                Hdata.IsUpToServer = "未上传";
-                Hdata.IsBan = "未检测";
-                HackDataList.Add(Hdata);
-                HackDateListSave(HackDataList);
-                DataGrid.Items.Refresh();
-                List<string> EnCheckTypesList = new List<string>();
-                foreach (string aaa in CheckTypesList)
-                {
-                    EnCheckTypesList.Add(CHENDATA.Games[GameName].CheckTypes[aaa].Name);
-                }
-                string EnGame = CHENDATA.Games[GameName].Name;
-                string EnWeaponList = CHENDATA.Games[GameName].Arms[GameClass.Text].EquipmentSets[WeaponClass.Text].Equipments[WeaponList.Text].Name;
-                string EnClass = CHENDATA.Games[GameName].Arms[GameClass.Text].Name;
-                string EnMap = CHENDATA.Games[GameName].Maps[GameMap.Text].Name;
-
-                bool end = eahttp.ReportCheat(a.AllToComment(EnGame, EnCheckTypesList, EnClass, EnWeaponList, EnMap, K.Text, D.Text));
-                if (end)
-                {
-                    MessageBox.Show("举报成功！");
-                }
-                else
-                {
-                    MessageBox.Show("举报失败！");
-                }
-
-
-
-            }
-        }
-
-        /// <summary>
-        /// 名字批量检测按钮
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Button_CheckName(object sender, RoutedEventArgs e)
-        {
-            if (IsLoaded)
-            {
-                foreach (HackData Data in HackDataList)
-                {
-                    if (Data.HackEAID == null)
-                    {
-
-                    }
-                    string newName = eahttp.IDGetName(Data.HackEAID);
-                    if (newName != Data.NameList[Data.NameList.Count - 1])
-                    {
-                        Data.NameList.Add(newName);
-                    }
-
-                }
-
-            }
-        }
-
-
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            TextProcessing a = new TextProcessing();
-            string c = a.ToString(CheckTypesList);
-            List<string> aa = a.ToList(c);
-        }
-
         private void Button_OpenEAWeb(object sender, RoutedEventArgs e)
         {
             InfoWindows a;
@@ -673,12 +630,34 @@ namespace OriginReportTools
             a.WindowState = WindowState.Normal;
             a.ShowInTaskbar = true;
         }
+
+        private void StatementConfirmChk_Checked(object sender, RoutedEventArgs e)
+        {
+           // ConfigManager.ConfigManager.ConfirmStatement();
+            StatementGrid.Visibility = Visibility.Hidden;
+        }
+
+        public void LoadDataGrid()
+        {
+
+        }
+
+        private void Button_Remove(object sender, RoutedEventArgs e)
+        {
+             HackData a =DataGrid.SelectedItem as HackData;
+            HackDataList.Remove(a);
+            HackDateListSave(HackDataList);
+            dataBinding();
+        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (!IDCheck())
                 return;
-            bFtracker = new BFtracker(HackName.Text, eahttp.Token);
+            bFtracker= new BFtracker(HackName.Text,eahttp.Token);
             bFtracker.Show();
+
+          
         }
 
         private void EAWeb_Click(object sender, RoutedEventArgs e)
@@ -691,46 +670,9 @@ namespace OriginReportTools
             a.Show();
             a.WindowState = WindowState.Normal;
             a.ShowInTaskbar = true;
-        }
-
-
-        /// <summary>
-        /// 删除档案
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Button_Remove(object sender, RoutedEventArgs e)
-        {
-            HackData a = DataGrid.SelectedItem as HackData;
-            HackDataList.Remove(a);
-            HackDateListSave(HackDataList);
-            DataGrid.Items.Refresh();
-        }
-
-        #endregion
-
-
-        private void StatementConfirmChk_Checked(object sender, RoutedEventArgs e)
-        {
-            StatementGrid.Visibility = Visibility.Hidden;
-        }
-
-        public void LoadDataGrid()
-        {
 
         }
-
-
-
     }
-
-
-
-
-
-
-
-    #region 绑定数据转换管理
     /// <summary>
     /// 获取作弊玩家被举报后的最新ID
     /// </summary>
@@ -759,6 +701,7 @@ namespace OriginReportTools
     /// <summary>
     /// 获取作弊玩家被举报时的ID
     /// </summary>
+
     public class HackFirstNameConverter : IValueConverter
     {
 
@@ -775,8 +718,6 @@ namespace OriginReportTools
         }
 
     }
-
-
     public class ReportTimeConverter : IValueConverter
     {
 
@@ -795,5 +736,4 @@ namespace OriginReportTools
         }
 
     }
-    #endregion
 }
