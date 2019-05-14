@@ -672,6 +672,11 @@ namespace OriginReportTools
             a.ShowInTaskbar = true;
 
         }
+
+        private void UpdatePromptBox_Confirmed(bool IsUpdate)
+        {
+
+        }
     }
     /// <summary>
     /// 获取作弊玩家被举报后的最新ID

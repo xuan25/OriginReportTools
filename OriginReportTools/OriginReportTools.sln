@@ -4,6 +4,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OriginReportTools", "OriginReportTools\OriginReportTools.csproj", "{7F573D67-3411-4D82-9D6F-56D231E5DBE6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1C789A5C-F259-4765-B4E3-941758E1BDF1} = {1C789A5C-F259-4765-B4E3-941758E1BDF1}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OriginReportTools-updater", "OriginReportTools-updater\OriginReportTools-updater.csproj", "{1C789A5C-F259-4765-B4E3-941758E1BDF1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +20,10 @@ Global
 		{7F573D67-3411-4D82-9D6F-56D231E5DBE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F573D67-3411-4D82-9D6F-56D231E5DBE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F573D67-3411-4D82-9D6F-56D231E5DBE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C789A5C-F259-4765-B4E3-941758E1BDF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C789A5C-F259-4765-B4E3-941758E1BDF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C789A5C-F259-4765-B4E3-941758E1BDF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C789A5C-F259-4765-B4E3-941758E1BDF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

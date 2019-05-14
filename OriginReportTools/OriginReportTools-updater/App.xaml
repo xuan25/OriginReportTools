@@ -1,10 +1,9 @@
-﻿<Application x:Class="OriginReportTools.App"
+﻿<Application x:Class="OriginReportTools_updater.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:OriginReportTools"
-             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:local="clr-namespace:OriginReportTools_updater"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <sys:String x:Key="Version"><!--TODO : 填写版本号--></sys:String>
+         
     </Application.Resources>
 </Application>

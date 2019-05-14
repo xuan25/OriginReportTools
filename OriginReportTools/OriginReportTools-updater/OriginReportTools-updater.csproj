@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7F573D67-3411-4D82-9D6F-56D231E5DBE6}</ProjectGuid>
+    <ProjectGuid>{1C789A5C-F259-4765-B4E3-941758E1BDF1}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>OriginReportTools</RootNamespace>
-    <AssemblyName>OriginReportTools</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <RootNamespace>OriginReportTools_updater</RootNamespace>
+    <AssemblyName>OriginReportTools-updater</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -33,6 +32,10 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -55,33 +58,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BFtracker.xaml.cs">
-      <DependentUpon>BFtracker.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="InfoWindows.xaml.cs">
-      <DependentUpon>InfoWindows.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Json\IJson.cs" />
-    <Compile Include="Json\JsonArray.cs" />
-    <Compile Include="Json\JsonObject.cs" />
-    <Compile Include="Json\JsonParser.cs" />
-    <Compile Include="Json\JsonValue.cs" />
-    <Compile Include="TextProcessing .cs" />
-    <Compile Include="UpdatePrompt.xaml.cs">
-      <DependentUpon>UpdatePrompt.xaml</DependentUpon>
-    </Compile>
-    <Page Include="BFtracker.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="InfoWindows.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="LoginWindows.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -90,21 +66,16 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="EAHttp.cs" />
-    <Compile Include="GamesDataSet.cs" />
-    <Compile Include="GamesDataSetDemo.cs" />
-    <Compile Include="HackDataSet.cs" />
-    <Compile Include="LoginWindows.xaml.cs">
-      <DependentUpon>LoginWindows.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Downloader.cs" />
+    <Compile Include="Json\IJson.cs" />
+    <Compile Include="Json\JsonArray.cs" />
+    <Compile Include="Json\JsonObject.cs" />
+    <Compile Include="Json\JsonParser.cs" />
+    <Compile Include="Json\JsonValue.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="UpdatePrompt.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -132,15 +103,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Resource Include="BF1.png" />
-    <Resource Include="BFV.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="APEX.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Updater\OriginReportTools-updater.exe" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>cd $(TargetDir)
+copy /Y *.exe $(SolutionDir)OriginReportTools\Updater\</PostBuildEvent>
+  </PropertyGroup>
 </Project>

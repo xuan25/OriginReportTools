@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OriginReportTools"
-             mc:Ignorable="d" Height="160.983" Width="427.197">
+             mc:Ignorable="d" Height="160.983" Width="427.197" Loaded="UserControl_Loaded">
     <Grid x:Name="PromptGrid" Background="White">
         <Grid.Effect>
             <DropShadowEffect Color="#000000" ShadowDepth="2" BlurRadius="4" Direction="-90" Opacity="0.16"/>
