@@ -631,6 +631,11 @@ namespace OriginReportTools
             a.ShowInTaskbar = true;
         }
 
+        private void StatementConfirmChk_Checked(object sender, RoutedEventArgs e)
+        {
+           // ConfigManager.ConfigManager.ConfirmStatement();
+            StatementGrid.Visibility = Visibility.Hidden;
+        }
 
         public void LoadDataGrid()
         {

@@ -1,0 +1,61 @@
+﻿<Window x:Class="OriginReportTools.BFVtracker"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OriginReportTools"
+        mc:Ignorable="d"
+        Title="战绩分析工具" Height="504.249" Width="901.324">
+    <Grid ShowGridLines="True">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0" Grid.Row="0">
+            <Image x:Name="Img" Width="100" Height="100" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20" />
+
+            <TextBlock  Margin="20,0,0,0">游玩时间:</TextBlock>
+            <TextBlock Margin="20,0,0,0" x:Name="PlayTime" >[----------]</TextBlock>
+            <TextBlock  Margin="20,10,0,0">最后登陆日期:</TextBlock>
+            <TextBlock Margin="20,0,0,0" x:Name="LastPlayTime">[----------]</TextBlock>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="1" VerticalAlignment="Top" Margin="17">
+            <TextBlock>总览</TextBlock>
+            <DataGrid  x:Name="DataGrid" SelectionChanged="DataGrid_SelectionChanged" HeadersVisibility="Column" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <DataGrid.Columns>
+
+                    <DataGridTextColumn Binding="{Binding Score_min,Mode=OneWay}"  Header="得分/每分钟"/>
+                    <DataGridTextColumn Binding="{Binding KD,Mode=OneWay}" Header="KD"/>
+                    <DataGridTextColumn Binding="{Binding Rank,Mode=OneWay}" Header="等级"/>
+                    <DataGridTextColumn Binding="{Binding winP,Mode=OneWay}" Header="胜率"/>
+                    <DataGridTextColumn Binding="{Binding Kill,Mode=OneWay}" Header="杀敌"/>
+                    <DataGridTextColumn Binding="{Binding KPM,Mode=OneWay}" Header="杀敌/每分钟"/>
+                    <DataGridTextColumn Binding="{Binding Wins,Mode=OneWay}" Header="胜场"/>
+                    <DataGridTextColumn Binding="{Binding Deaths,Mode=OneWay}" Header="死亡"/>
+                    <DataGridTextColumn Binding="{Binding Assists,Mode=OneWay}" Header="助攻得分"/>
+                    <DataGridTextColumn Binding="{Binding Damage,Mode=OneWay}" Header="伤害得分"/>
+                    <DataGridTextColumn Binding="{Binding Heals,Mode=OneWay}" Header="治疗得分"/>
+                    <DataGridTextColumn Binding="{Binding Revives,Mode=OneWay}" Header="救治得分"/>
+                    <DataGridTextColumn Binding="{Binding Resupplies,Mode=OneWay}" Header="补给得分"/>
+                </DataGrid.Columns>
+
+            </DataGrid>
+            <TextBlock>兵种概览</TextBlock>
+            <DataGrid x:Name="DataGridClass" SelectionChanged="DataGrid_SelectionChanged" HeadersVisibility="Column" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <DataGrid.Columns>
+
+                    <DataGridTextColumn Binding="{Binding ClassName,Mode=OneWay}"  Header="兵种" CanUserSort="False"/>
+                    <DataGridTextColumn Binding="{Binding Rank,Mode=OneWay}" Header="等级" CanUserSort="False"/>
+                    <DataGridTextColumn Binding="{Binding Score,Mode=OneWay}"  Header="得分" CanUserSort="False"/>
+                    <DataGridTextColumn Binding="{Binding Score_min,Mode=OneWay}"  Header="得分/每分钟" CanUserSort="False"/>
+                    <DataGridTextColumn Binding="{Binding Kill,Mode=OneWay}" Header="杀敌" CanUserSort="False"/>
+                    <DataGridTextColumn Binding="{Binding KPM,Mode=OneWay}" Header="杀敌/每分钟" CanUserSort="False"/>
+                    <DataGridTextColumn Binding="{Binding KD,Mode=OneWay}" Header="KD" CanUserSort="False"/>
+
+                </DataGrid.Columns>
+
+            </DataGrid>
+        </StackPanel>
+    </Grid>
+</Window>

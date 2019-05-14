@@ -442,5 +442,36 @@
                 </Button.Content>
             </Button>
         </StackPanel>
+        <Grid x:Name="StatementGrid" Background="#c4000000" Visibility="Visible" Grid.ColumnSpan="3">
+            <Grid x:Name="StatementPanel" Background="#FFFFFFFF"  VerticalAlignment="Center" HorizontalAlignment="Center">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Border Grid.Row="0" BorderThickness="0,0,0,1" BorderBrush="#e5e9ef">
+                    <TextBlock Grid.Column="1" Padding="10" Text="声明" FontSize="18" HorizontalAlignment="Center"/>
+                </Border>
+                <TextBlock Grid.Row="1" Margin="10" Padding="10" FontSize="14" TextAlignment="Left" LineHeight="25" Foreground="Black">
+                    <Run Text="1.本软件是为了维护正常玩家的游戏环境而开发制作。"/>
+                    <LineBreak/>
+                    <Run Text="2.上传的每一份档案在上传时都应正确的对档案进行合理，正确的分类。"/>
+                    <LineBreak/>
+                    <Run Text="3.服务器中的数据都是由玩家自行分类上传，开发者不能保证其有效性，"/>
+                    <LineBreak/>
+                    <Run Text="这些上传的作弊档案不能作为实锤开挂的证据，但可作为追查线索"/>
+                    <LineBreak/>
+                    <Run Text="4.OriginReportTools只是个提供档案存储、追查的、分析的信息存储平台"/>
+                    <LineBreak/>
+                    <Run Text="5.对上传，举报功能进行滥用的用户，管理员有停止对其提供进行相关服务的权力"/>
+                    <LineBreak/>
+                    <Run Text="6.上传的数据中也包含举报者的数据，我们有可能会对你和作弊者的游戏行为进行分析，以此确保上传数据的有效性"/>
+                </TextBlock>
+                <Grid Grid.Row="2" Background="#e5e9ef">
+                    <CheckBox x:Name="StatementConfirmChk" Margin="10" Content="我已认真阅读以上声明" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center" FocusVisualStyle="{x:Null}"  Checked="StatementConfirmChk_Checked"/>
+                </Grid>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>

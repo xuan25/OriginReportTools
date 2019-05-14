@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:OriginReportTools"
         mc:Ignorable="d"
         Title="战绩分析工具" Height="504.249" Width="970.324">
-    <Grid ShowGridLines="True">
+    <Grid ShowGridLines="False">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition/>
@@ -44,13 +44,13 @@
                     <TextBlock>兵种概览</TextBlock>
                     <DataGrid x:Name="DataGridClasses" HeadersVisibility="Column" HorizontalAlignment="Stretch" VerticalAlignment="Top" PreviewMouseWheel="DataGrid_PreviewMouseWheel">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Binding="{Binding Name,Mode=OneWay}"  Header="兵种" CanUserSort="False" Width="2*"/>
-                            <DataGridTextColumn Binding="{Binding Rank,Mode=OneWay}" Header="等级" CanUserSort="False" Width="*"/>
-                            <DataGridTextColumn Binding="{Binding Score,Mode=OneWay}"  Header="得分" CanUserSort="False" Width="*"/>
-                            <DataGridTextColumn Binding="{Binding ScoreMin,Mode=OneWay}"  Header="得分/每分钟" CanUserSort="False" Width="*"/>
-                            <DataGridTextColumn Binding="{Binding Kill,Mode=OneWay}" Header="杀敌" CanUserSort="False" Width="*"/>
-                            <DataGridTextColumn Binding="{Binding KPM,Mode=OneWay}" Header="杀敌/每分钟" CanUserSort="False" Width="*"/>
-                            <DataGridTextColumn Binding="{Binding KD,Mode=OneWay}" Header="KD" CanUserSort="False" Width="*"/>
+                            <DataGridTextColumn Binding="{Binding Name,Mode=OneWay}"  Header="兵种" Width="2*"/>
+                            <DataGridTextColumn Binding="{Binding Rank,Mode=OneWay}" Header="等级" Width="*"/>
+                            <DataGridTextColumn Binding="{Binding Score,Mode=OneWay}"  Header="得分" Width="*"/>
+                            <DataGridTextColumn Binding="{Binding ScoreMin,Mode=OneWay}"  Header="得分/每分钟" Width="*"/>
+                            <DataGridTextColumn Binding="{Binding Kill,Mode=OneWay}" Header="杀敌" Width="*"/>
+                            <DataGridTextColumn Binding="{Binding KPM,Mode=OneWay}" Header="杀敌/每分钟" Width="*"/>
+                            <DataGridTextColumn Binding="{Binding KD,Mode=OneWay}" Header="KD" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
                     <TextBlock>武器总览</TextBlock>
