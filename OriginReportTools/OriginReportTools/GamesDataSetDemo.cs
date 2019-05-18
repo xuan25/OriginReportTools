@@ -1055,7 +1055,7 @@ namespace OriginReportTools
                                             },
                                         })
                                 }
-                            },
+                            },//兵种
                             new object[][]
                             {
                                  new object[]{"透视",new GamesDataSet.Game.CheckType("WallHack") },
@@ -1065,7 +1065,7 @@ namespace OriginReportTools
                                // new object[]{"子弹穿墙",new GamesDataSet.Game.CheckType("Bullet penetration hack") },
                               //  new object[]{ "一枪秒杀", new GamesDataSet.Game.CheckType("One shot kill in every range without a headshot") },
                                // new object[]{"全图索敌",new GamesDataSet.Game.CheckType("WallHack") }
-                            }
+                            }//作弊选项
 
                             )
                     }

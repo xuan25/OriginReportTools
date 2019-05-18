@@ -57,9 +57,9 @@
             <RowDefinition/>
             <RowDefinition Height="28"/>
         </Grid.RowDefinitions>
-        <Grid x:Name="Header" Grid.Row="0" Background="#f25d8e" MouseLeftButtonDown="Header_MouseLeftButtonDown" ClipToBounds="False">
-            <Image Grid.Column="0" Height="16" Width="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" Source="icon.ico" RenderOptions.BitmapScalingMode="Fant"/>
-            <TextBlock x:Name="TitleBox" Grid.Column="0" Foreground="#FFFFFFFF" FontSize="16" Margin="40,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="Bili-dl-updater"/>
+        <Grid x:Name="Header" Grid.Row="0" Background="#FFFF9A45" MouseLeftButtonDown="Header_MouseLeftButtonDown" ClipToBounds="False">
+            <Image Grid.Column="0" Height="16" Width="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" RenderOptions.BitmapScalingMode="Fant"/>
+            <TextBlock x:Name="TitleBox" Grid.Column="0" Foreground="#FFFFFFFF" FontSize="16" Margin="40,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="OriginReportTools-updater"/>
             <Grid Grid.Column="3" Margin="0,0,10,0" VerticalAlignment="Center" HorizontalAlignment="Right">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -119,7 +119,7 @@
             <ProgressBar x:Name="PBar" Grid.Row="1" Foreground="#00a1d6" Value="0" HorizontalAlignment="Stretch" Height="10" Margin="10,0" VerticalAlignment="Center"/>
         </Grid>
         <Grid Grid.Row="2" Background="#e5e9ef">
-            <TextBlock Text="Bili-dl 更新程序" Opacity="0.5" Margin="0,0,15,0" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+            <TextBlock Text="Origin举报工具 更新程序" Opacity="0.5" Margin="0,0,15,0" VerticalAlignment="Center" HorizontalAlignment="Right"/>
         </Grid>
     </Grid>
 </Window>

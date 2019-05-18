@@ -47,6 +47,7 @@ namespace OriginReportTools
             //MainButton = chendata.BF1;
             //chendata.SerializableSave(chendata);
             LoadCheckBox(CHENDATA.Games["战地1"]);
+            this.Title ="OriginReportTools   "+ Application.Current.FindResource("Version").ToString();
             GameName = "战地1";
             loginWindows = new LoginWindows();
             loginWindows.LoggedIn += LoginWindow_LoggedIn;

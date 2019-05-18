@@ -211,13 +211,13 @@
     </Window.Resources>
     <Grid ShowGridLines="False">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" ></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="67"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
 
-        <Grid Grid.Column="0" HorizontalAlignment="Left">
+        <Grid Grid.Column="0" HorizontalAlignment="Left" Width="66">
             <StackPanel  HorizontalAlignment="Center" VerticalAlignment="Center" >
                 <Button x:Name="BF1_B" BorderThickness="4,0,0,0" Click="BF1_B_Click" Background="{x:Null}" BorderBrush="#FFFF9A45" >
                     <Button.Content>
@@ -331,8 +331,8 @@
                                 <DataGridTextColumn Binding="{Binding SaveInfo,Mode=OneWay}" ClipboardContentBinding="{x:Null}" Header="档案状态" Width="65"/>
                             </DataGrid.Columns>
                         </DataGrid>
-                        
-                        
+
+
                         <StackPanel Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,5,0,5">
                             <Button  Margin="0,5,0,5" Click="Button_OpenEAWeb" >
                                 <Button.Content>
@@ -376,7 +376,7 @@
                             </Button>
                             <TextBlock  Text="将服务器的档案同步至本地" FontWeight="Bold" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </StackPanel>
-                        
+
                     </Grid>
                 </TabItem>
                 <TabItem Background="{x:Null}" BorderBrush="{x:Null}" Template="{DynamicResource TabItemControlTemplate1}">
@@ -442,7 +442,7 @@
                 </Button.Content>
             </Button>
         </StackPanel>
-        <Grid x:Name="StatementGrid" Background="#c4000000" Visibility="Visible" Grid.ColumnSpan="3">
+        <Grid x:Name="StatementGrid" Background="#c4000000" Visibility="Hidden" Grid.ColumnSpan="3">
             <Grid x:Name="StatementPanel" Background="#FFFFFFFF"  VerticalAlignment="Center" HorizontalAlignment="Center">
 
                 <Grid.RowDefinitions>
