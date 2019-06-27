@@ -676,8 +676,10 @@ namespace OriginReportTools
 
         private void UpdatePromptBox_Confirmed(bool IsUpdate)
         {
-
+            if (IsUpdate)
+                this.Close();
         }
+
     }
     /// <summary>
     /// 获取作弊玩家被举报后的最新ID

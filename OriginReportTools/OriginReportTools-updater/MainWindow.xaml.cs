@@ -36,7 +36,7 @@ namespace OriginReportTools_updater
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            string[] args = (string[])Application.Current.Properties["Args"];
+            string[] args = (string[])Application.Current.Properties["Args"];//检测启动参数，如果没传入参数，则直接结束进程
             if (args.Length != 1)
             {
                 Close();
@@ -51,7 +51,7 @@ namespace OriginReportTools_updater
 
         private void Update()
         {
-            downloader = new Downloader(Filepath);
+            downloader = new Downloader(Filepath);//实例化downloader类，传入文件路径
             downloader.ProgressUpdated += Downloader_ProgressUpdated;
             downloader.Finished += Downloader_Finished;
             downloader.StartDownloadLatest();
@@ -66,7 +66,7 @@ namespace OriginReportTools_updater
             }));
         }
 
-        private void Downloader_ProgressUpdated(Downloader.Status status, double progress, long bps)
+        private void Downloader_ProgressUpdated(Downloader.Status status, double progress, long bps)//
         {
             Dispatcher.Invoke(new Action(() =>
             {

@@ -454,7 +454,7 @@
                     <TextBlock Grid.Column="1" Padding="10" Text="声明" FontSize="18" HorizontalAlignment="Center"/>
                 </Border>
                 <TextBlock Grid.Row="1" Margin="10" Padding="10" FontSize="14" TextAlignment="Left" LineHeight="25" Foreground="Black">
-                    <Run Text="1.本软件是为了维护正常玩家的游戏环境而开发制作。"/>
+                    <Run Text="1.本软件是为了维护正常玩家的游戏环境而开发制作."/>
                     <LineBreak/>
                     <Run Text="2.上传的每一份档案在上传时都应正确的对档案进行合理，正确的分类。"/>
                     <LineBreak/>
@@ -473,7 +473,7 @@
                 </Grid>
             </Grid>
         </Grid>
-        <Grid x:Name="UpdatePromptGrid" Visibility="{Binding ElementName=UpdatePromptBox, Path=Visibility}" Background="#88000000">
+        <Grid x:Name="UpdatePromptGrid" Grid.ColumnSpan="3" Visibility="{Binding ElementName=UpdatePromptBox, Path=Visibility}" Background="#88000000">
             <local:UpdatePrompt x:Name="UpdatePromptBox" Visibility="Hidden" Grid.Column="1" Grid.Row="1" Confirmed="UpdatePromptBox_Confirmed"/>
         </Grid>
     </Grid>

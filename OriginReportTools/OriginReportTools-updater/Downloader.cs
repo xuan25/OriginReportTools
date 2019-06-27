@@ -38,18 +38,20 @@ namespace OriginReportTools_updater
             IsBackuped = false;
             Position = 0;
             Length = 0;
+
+            if (File.Exists(Filepath + ".temp"))
+                File.Delete(Filepath + ".temp");
         }
+
 
         public void CancelDownload()
         {
             AbortDownload();
-            if (IsBackuped)
-            {
-                File.Delete(Filepath);
-                File.Move(Filepath + ".backup", Filepath);
-                IsBackuped = false;
-            }
+            if (File.Exists(Filepath + ".temp"))
+                File.Delete(Filepath + ".temp");
         }
+
+        
 
         public void AbortDownload()
         {
@@ -70,10 +72,6 @@ namespace OriginReportTools_updater
             IsRunning = true;
             DownloadThread = new Thread(delegate ()
             {
-                while (IsFileInUse(Filepath))
-                {
-                    Thread.Sleep(1000);
-                }
                 DownloadLatest();
             });
             DownloadThread.Start();
@@ -102,22 +100,28 @@ namespace OriginReportTools_updater
         public void DownloadLatest()
         {
             ProgressUpdated?.Invoke(Status.Initializing, 0, 0);
-            File.Move(Filepath, Filepath + ".backup");
-            IsBackuped = true;
             string downloadUrl = GetLatestDownloadUrl();
 
             ProgressUpdated?.Invoke(Status.Downloading, 0, 0);
             StartProgressMonitor();
-            Download(Filepath, downloadUrl);
+            Download(Filepath + ".temp", downloadUrl);
             AbortProgressMonitor();
 
+            ProgressUpdated?.Invoke(Status.Waiting, 100, 0);
+            while (File.Exists(Filepath) && IsFileInUse(Filepath))
+            {
+                Thread.Sleep(1000);
+            }
+
             ProgressUpdated?.Invoke(Status.Finishing, 100, 0);
-            File.Delete(Filepath + ".backup");
+            if (File.Exists(Filepath))
+                File.Delete(Filepath);
+            File.Move(Filepath + ".temp", Filepath);
 
             ProgressUpdated?.Invoke(Status.Finished, 100, 0);
             IsRunning = false;
             Finished?.Invoke();
-            
+
         }
 
         private void Download(string filepath, string downloadUrl)
@@ -130,10 +134,13 @@ namespace OriginReportTools_updater
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(downloadUrl);
                 request.Method = "GET";
                 request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36";
+                if (Length != 0)
+                    request.AddRange(Position);
                 try
                 {
                     HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                    Length = response.ContentLength;
+                    if (Length == 0)
+                        Length = response.ContentLength;
                     Stream dataStream = response.GetResponseStream();
 
                     long copied = 0;
@@ -156,27 +163,37 @@ namespace OriginReportTools_updater
                 {
 
                 }
-            } while (Position != Length);
+            } while (Length == 0 || (Length != 0 && Position != Length));
             OutputFileStream.Close();
         }
 
         public string GetLatestDownloadUrl()
         {
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.github.com/repos/xuan525/OriginReportTools/releases/latest");
-            request.Accept = "application/vnd.github.v3+json";
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36";
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            Stream dataStream = response.GetResponseStream();
-            StreamReader reader = new StreamReader(dataStream);
-            string result = reader.ReadToEnd();
-            reader.Close();
-            response.Close();
-            dataStream.Close();
+            while (true)
+            {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.github.com/repos/xuan525/OriginReportTools/releases/latest");
+                request.Accept = "application/vnd.github.v3+json";
+                request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36";
+                try
+                {
+                    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                    Stream dataStream = response.GetResponseStream();
+                    StreamReader reader = new StreamReader(dataStream);
+                    string result = reader.ReadToEnd();
+                    reader.Close();
+                    response.Close();
+                    dataStream.Close();
 
-            IJson json = JsonParser.Parse(result);
-            string url = json.GetValue("assets").GetValue(0).GetValue("browser_download_url").ToString();
-            return url;
+                    IJson json = JsonParser.Parse(result);
+                    string url = json.GetValue("assets").GetValue(0).GetValue("browser_download_url").ToString();
+                    return url;
+                }
+                catch (WebException)
+                {
+                    Thread.Sleep(5000);
+                }
+            }
         }
 
         private void StartProgressMonitor()

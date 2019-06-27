@@ -5,6 +5,6 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <sys:String x:Key="Version">v2.0.0-alpha.1<!--TODO : 填写版本号--></sys:String>
+        <sys:String x:Key="Version">v2.0.0-alpha.0<!--TODO : 填写版本号--></sys:String>
     </Application.Resources>
 </Application>
