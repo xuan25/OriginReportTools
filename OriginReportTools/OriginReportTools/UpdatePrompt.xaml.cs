@@ -1,10 +1,10 @@
-﻿using Json;
+﻿using JsonUtil;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -36,14 +36,18 @@ namespace OriginReportTools
         /// </summary>
         public event ConfirmedDel Confirmed;
 
-        public string UpdaterPath;
+        public static string UpdaterPath;
         public FileStream CheckingFileStream;
         public Thread CheckVersionThread;
+
+        static UpdatePrompt()
+        {
+            UpdaterPath = AppDomain.CurrentDomain.BaseDirectory + "OriginReportTools-updater.exe";
+        }
 
         public UpdatePrompt()
         {
             InitializeComponent();
-            UpdaterPath = AppDomain.CurrentDomain.BaseDirectory + "OriginReportTools-updater.exe";
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -108,20 +112,24 @@ namespace OriginReportTools
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.github.com/repos/xuan525/OriginReportTools/releases/latest");
             request.Accept = "application/vnd.github.v3+json";
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36";
+            request.UserAgent = "OriginReportTools";
             try
             {
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                Stream dataStream = response.GetResponseStream();
-                StreamReader reader = new StreamReader(dataStream);
-                string result = reader.ReadToEnd();
-                reader.Close();
-                response.Close();
-                dataStream.Close();
+                string result;
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (Stream stream = response.GetResponseStream())
+                using (StreamReader reader = new StreamReader(stream))
+                    result = reader.ReadToEnd();
 
-                IJson json = JsonParser.Parse(result);
-                string latestTag = json.GetValue("tag_name").ToString();
-                return Application.Current.FindResource("Version").ToString() == latestTag;
+                JsonUtil.Json.Value json = JsonUtil.Json.Parser.Parse(result);
+                string latestTag = json["tag_name"];
+                if (Application.Current.FindResource("Version").ToString() == latestTag)
+                    return true;
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    InfoBox.Text = ((string)json["body"]).Replace("\\r", "\r").Replace("\\n", "\n");
+                }));
+                return false;
             }
             catch
             {
@@ -137,19 +145,32 @@ namespace OriginReportTools
 
         private void NowBtn_Click(object sender, RoutedEventArgs e)
         {
-            ExportResource(UpdaterPath, "Updater.OriginReportTools-updater.exe");
-            System.Diagnostics.Process.Start(UpdaterPath, System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
+            try
+            {
+                RunUpdate();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                ProcessStartInfo processStartInfo = new ProcessStartInfo(Process.GetCurrentProcess().MainModule.FileName, "-update")
+                {
+                    Verb = "runas"
+                };
+                Process.Start(processStartInfo);
+            }
             Confirmed?.Invoke(true);
         }
 
-        private void ExportResource(string path, string source)
+        public static void RunUpdate()
         {
-            string projectName = Assembly.GetExecutingAssembly().GetName().Name.ToString().Replace("-", "_");
-            Stream resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(projectName + "." + source);
-            FileStream fileStream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write);
-            resourceStream.CopyTo(fileStream);
-            fileStream.Close();
-            resourceStream.Close();
+            using (Stream stream = Application.GetResourceStream(new Uri("/Updater/OriginReportTools-updater.exe", UriKind.Relative)).Stream)
+            {
+                using (FileStream fileStream = new FileStream(UpdaterPath, FileMode.OpenOrCreate, FileAccess.Write))
+                {
+                    stream.CopyTo(fileStream);
+                }
+            }
+
+            Process.Start(UpdaterPath, string.Format("\"{0}\"", Process.GetCurrentProcess().MainModule.FileName));
         }
     }
 }

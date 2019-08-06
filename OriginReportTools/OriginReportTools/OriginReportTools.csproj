@@ -61,6 +61,7 @@
     <Compile Include="InfoWindows.xaml.cs">
       <DependentUpon>InfoWindows.xaml</DependentUpon>
     </Compile>
+    <Compile Include="JsonUtil.cs" />
     <Compile Include="Json\IJson.cs" />
     <Compile Include="Json\JsonArray.cs" />
     <Compile Include="Json\JsonObject.cs" />
@@ -140,7 +141,7 @@
     <Resource Include="APEX.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Updater\OriginReportTools-updater.exe" />
+    <Resource Include="Updater\OriginReportTools-updater.exe" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

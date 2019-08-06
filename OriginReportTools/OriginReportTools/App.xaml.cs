@@ -17,10 +17,13 @@ namespace OriginReportTools
     {
         public App()
         {
-           GamesDataSetDemo Data = new GamesDataSetDemo();
-           SerializableSave(Data.Data);
+            this.Resources.Add("Version", "v0.7.0-alpha");
+
+            GamesDataSetDemo Data = new GamesDataSetDemo();
+            SerializableSave(Data.Data);
 
         }
+
         public void SerializableSave(GamesDataSet chEnData)
         {
             string fileDirectory = Environment.CurrentDirectory + "\\";
@@ -31,6 +34,30 @@ namespace OriginReportTools
             BinaryFormatter binaryFormatter = new BinaryFormatter();
             binaryFormatter.Serialize(stream, chEnData);
             stream.Close();
+        }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            if (e.Args.Length == 0)
+            {
+                new MainWindow().Show();
+            }
+            else
+            {
+                switch (e.Args[0].ToLower())
+                {
+                    case "-update":
+                        UpdatePrompt.RunUpdate();
+                        Environment.Exit(0);
+                        break;
+                    default:
+                        MessageBox.Show("Invalid arguments");
+                        Environment.Exit(0);
+                        break;
+                }
+            }
         }
 
 
