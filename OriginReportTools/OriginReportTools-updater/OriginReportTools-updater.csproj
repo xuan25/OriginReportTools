@@ -108,4 +108,8 @@
     <PostBuildEvent>cd $(TargetDir)
 copy /Y *.exe $(SolutionDir)OriginReportTools\Updater\</PostBuildEvent>
   </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>mkdir $(SolutionDir)OriginReportTools\Updater\
+exit 0</PreBuildEvent>
+  </PropertyGroup>
 </Project>
